@@ -1,10 +1,12 @@
 package com.example.karthick.popularmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
@@ -32,7 +34,7 @@ public class MoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         /*Inflate the grid view*/
-        View rootView = inflater.inflate(R.layout.moviesfragment, container, false);
+        View rootView = inflater.inflate(R.layout.movies_fragment, container, false);
 
         /*Create dummy data for testing the grid view */
         ArrayList<String> dummmyData = new ArrayList<>(Arrays.asList(
@@ -48,6 +50,13 @@ public class MoviesFragment extends Fragment {
 
         GridView moviesGrid = (GridView) rootView.findViewById(R.id.gridview_movies);
         moviesGrid.setAdapter(moviesGridAdapter);
+        moviesGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent openMovieDetailsIntent = new Intent(getActivity(), MovieDetailActivity.class);
+                startActivity(openMovieDetailsIntent);
+            }
+        });
 
         return rootView;
     }

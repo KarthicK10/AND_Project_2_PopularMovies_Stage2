@@ -3,15 +3,16 @@ package com.example.karthick.popularmovies;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.movie_detail_activity);
         if(savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_container, new MoviesFragment())
+                    .add(R.id.movie_details_container, new MovieDetailFragment())
+                    .add(R.id.movie_details_container, new MovieSynopsisFragment())
                     .commit();
         }
     }
