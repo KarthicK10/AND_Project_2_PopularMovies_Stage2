@@ -4,8 +4,4 @@
     <!-- Application name -->
     <string name="app_name">Popular Movies</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Movies Fragment</string>
-
-
 </resources>
