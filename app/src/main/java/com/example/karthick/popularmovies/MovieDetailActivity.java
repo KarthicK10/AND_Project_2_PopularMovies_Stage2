@@ -12,7 +12,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         if(savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.movie_details_container, new MovieDetailFragment())
-                    .add(R.id.movie_details_container, new MovieSynopsisFragment())
+                    .add(R.id.movie_details_container, new MovieSynapsisFragment())
                     .commit();
         }
     }

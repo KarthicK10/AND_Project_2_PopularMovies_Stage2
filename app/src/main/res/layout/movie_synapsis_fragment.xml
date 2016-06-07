@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/movie_synopsis_fragment"
+    android:id="@+id/movie_synapsis_fragment"
     >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/movie_synopsis_fragment_textview"
-        android:text="movie synopsis fragment"/>
+        android:id="@+id/movie_synapsis_fragment_textview"
+        android:text="movie synapsis fragment"/>
 
 </FrameLayout>

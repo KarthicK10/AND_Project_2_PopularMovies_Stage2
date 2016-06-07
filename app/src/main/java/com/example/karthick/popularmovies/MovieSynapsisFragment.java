@@ -11,9 +11,9 @@ import android.view.ViewGroup;
  *
  * A fragment to show the synopsis of the movie
  */
-public class MovieSynopsisFragment extends Fragment {
+public class MovieSynapsisFragment extends Fragment {
 
-    public MovieSynopsisFragment() {
+    public MovieSynapsisFragment() {
         // Required empty public constructor
     }
 
@@ -26,7 +26,7 @@ public class MovieSynopsisFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.movie_synopsis_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.movie_synapsis_fragment, container, false);
         return rootView;
     }
 
