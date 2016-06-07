@@ -10,9 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
+import com.example.karthick.popularmovies.domain.Movie;
 import com.example.karthick.popularmovies.domain.MoviesSortOrder;
 
 import java.io.BufferedReader;
@@ -22,7 +22,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,16 +60,23 @@ public class MoviesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.movies_fragment, container, false);
 
         /*Create dummy data for testing the grid view */
-        ArrayList<String> dummmyData = new ArrayList<>(Arrays.asList(
-                "movie1", "movie2", "movie3", "movie4", "movie5", "movie6"
-        ));
+        ArrayList<Movie> moviesList = new ArrayList<Movie>();
+        moviesList.add(new Movie(1, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(2, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(3, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(4, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(5, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(6, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(7, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(8, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(9, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(10, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(11, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+        moviesList.add(new Movie(12, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
+
 
         /*Initiate an array adapter to supply text views to the grids*/
-        ArrayAdapter<String> moviesGridAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                R.layout.grid_item_movie, R.id.grid_item_movie_textView,
-                dummmyData
-        );
+        MovieAdapter moviesGridAdapter = new MovieAdapter(getActivity(), moviesList);
 
         GridView moviesGrid = (GridView) rootView.findViewById(R.id.gridview_movies);
         moviesGrid.setAdapter(moviesGridAdapter);
