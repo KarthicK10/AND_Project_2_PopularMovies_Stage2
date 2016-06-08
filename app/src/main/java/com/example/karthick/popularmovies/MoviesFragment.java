@@ -15,12 +15,19 @@ import android.widget.GridView;
 import com.example.karthick.popularmovies.domain.Movie;
 import com.example.karthick.popularmovies.domain.MoviesSortOrder;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -31,6 +38,7 @@ import java.util.Date;
  */
 public class MoviesFragment extends Fragment {
 
+    private MovieAdapter moviesGridAdapter;
     public MoviesFragment() {
         // Required empty public constructor
     }
@@ -59,24 +67,8 @@ public class MoviesFragment extends Fragment {
         /*Inflate the grid view*/
         View rootView = inflater.inflate(R.layout.movies_fragment, container, false);
 
-        /*Create dummy data for testing the grid view */
-        ArrayList<Movie> moviesList = new ArrayList<Movie>();
-        moviesList.add(new Movie(1, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(2, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(3, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(4, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(5, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(6, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(7, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(8, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(9, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(10, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(11, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-        moviesList.add(new Movie(12, "Movie1", "posterPath", "synapsis...", 9.5f, new Date()));
-
-
         /*Initiate an array adapter to supply text views to the grids*/
-        MovieAdapter moviesGridAdapter = new MovieAdapter(getActivity(), moviesList);
+        moviesGridAdapter = new MovieAdapter(getActivity(), new ArrayList<Movie>());
 
         GridView moviesGrid = (GridView) rootView.findViewById(R.id.gridview_movies);
         moviesGrid.setAdapter(moviesGridAdapter);
@@ -91,7 +83,7 @@ public class MoviesFragment extends Fragment {
         return rootView;
     }
 
-    private class FetchMoviesTask extends AsyncTask<String, Void, String[]>{
+    private class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>>{
 
         private final String LOG_TAG = AsyncTask.class.getSimpleName();
 
@@ -110,7 +102,7 @@ public class MoviesFragment extends Fragment {
          * @see #publishProgress
          */
         @Override
-        protected String[] doInBackground(String... params) {
+        protected ArrayList<Movie> doInBackground(Void... params) {
 
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
@@ -181,12 +173,84 @@ public class MoviesFragment extends Fragment {
                 }
             }
 
-
+            try{
+                return getMoviesFromJSON(moviesJsonStr);
+            }
+            catch(JSONException e){
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.printStackTrace();
+            }
 
             return null;
 
         }
 
+        /*Function to get the movies data from the JSON string */
+        private ArrayList<Movie> getMoviesFromJSON (String moviesJsonStr) throws JSONException{
+
+            ArrayList<Movie> moviesArrayList = new ArrayList<Movie>(); // The result list of movies to be returned.
+
+            //These are the names of the JSON object that needs to be extracted
+            final String MDB_RESULTS = "results";
+            final String MDB_ID = "id";
+            final String MDB_ORIGINAL_TITLE = "original_title";
+            final String MDB_POSTER_PATH = "poster_path";
+            final String MDB_BACKDROP_PATH = "backdrop_path";
+            final String MDB_OVERVIEW = "overview";
+            final String MDB_RELEASE_DATE = "release_date";
+            final String MDB_VOTE_AVERAGE = "vote_average";
+
+            JSONObject moviesJson = new JSONObject(moviesJsonStr);
+            JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);
+
+            try{
+                for (int i = 0; i <moviesArray.length() ; i++) {
+
+                    //Get the JSON object representing the movie
+                    JSONObject movie = moviesArray.getJSONObject(i);
+
+                    //Get the movie attributes
+                    int movieId = movie.getInt(MDB_ID);
+                    String originalTitle = movie.getString(MDB_ORIGINAL_TITLE);
+                    String posterPath = movie.getString(MDB_POSTER_PATH);
+                    String backdropPath = movie.getString(MDB_BACKDROP_PATH);
+                    String synapsis = movie.getString(MDB_OVERVIEW);
+                    double userRating = movie.getDouble(MDB_VOTE_AVERAGE);
+                    DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+                    Date releaseDate = format.parse(movie.getString(MDB_RELEASE_DATE));
+
+                    //Add the movie to the movies array list result set.
+                    moviesArrayList.add(new Movie(movieId, originalTitle, posterPath, backdropPath, synapsis, userRating, releaseDate));
+                }
+            }
+            catch (ParseException e){
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.printStackTrace();
+            }
+
+            return  moviesArrayList;
+        }
+
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p/>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param movies The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
+        @Override
+        protected void onPostExecute(ArrayList<Movie> movies) {
+            if(movies != null){
+                moviesGridAdapter.clear();
+                for (Movie movie: movies) {
+                    moviesGridAdapter.add(movie);
+                }
+            }
+        }
     }
 
 

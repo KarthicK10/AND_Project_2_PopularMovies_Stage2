@@ -10,14 +10,16 @@ public class Movie {
     private int id;
     private String originalTitle;
     private String posterPath;
+    private String backdropPath;
     private String synapsis;
-    private float userRating;
+    private double userRating;
     private Date releaseDate;
 
-    public Movie (int id, String originalTitle, String posterPath, String synapsis, float userRating, Date releaseDate){
+    public Movie (int id, String originalTitle, String posterPath, String backdropPath, String synapsis, double userRating, Date releaseDate){
         this.id = id;
         this.originalTitle = originalTitle;
         this.posterPath = posterPath;
+        this.backdropPath = backdropPath;
         this.synapsis = synapsis;
         this.userRating = userRating;
         this.releaseDate = releaseDate;
@@ -39,11 +41,15 @@ public class Movie {
         return synapsis;
     }
 
-    public float getUserRating() {
+    public double getUserRating() {
         return userRating;
     }
 
     public Date getReleaseDate() {
         return releaseDate;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
     }
 }

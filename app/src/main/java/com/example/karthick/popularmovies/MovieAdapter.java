@@ -43,10 +43,15 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
         Movie movie = getItem(position);
         String posterPath = movie.getPosterPath();
+        final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+        String imageSizePath = "w500/";
 
+        /*Load the image view by fetching image from picasso using the movie's poster path */
         ImageView poseterImageView = (ImageView)rootView.findViewById(R.id.grid_item_movie_poster_imageView);
-        Picasso.with(getContext()).load("http://i.imgur.com/DvpvklR.png").into(poseterImageView);
+        String picassoPath = IMAGE_BASE_URL+imageSizePath+movie.getPosterPath();
+        Picasso.with(getContext()).load(picassoPath).into(poseterImageView);
 
         return rootView;
     }
 }
+
