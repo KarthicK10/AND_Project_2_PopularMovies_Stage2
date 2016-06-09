@@ -39,6 +39,8 @@ import java.util.Date;
 public class MoviesFragment extends Fragment {
 
     private MovieAdapter moviesGridAdapter;
+
+
     public MoviesFragment() {
         // Required empty public constructor
     }
@@ -76,6 +78,8 @@ public class MoviesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent openMovieDetailsIntent = new Intent(getActivity(), MovieDetailActivity.class);
+                Movie movie = moviesGridAdapter.getItem(position);
+                openMovieDetailsIntent.putExtra(Movie.MOVIE_PARCEL_KEY, movie);
                 startActivity(openMovieDetailsIntent);
             }
         });
