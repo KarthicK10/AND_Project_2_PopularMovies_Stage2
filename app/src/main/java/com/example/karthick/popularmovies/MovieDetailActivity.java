@@ -40,7 +40,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     public static class MovieDetailFragment extends Fragment {
 
         final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-        String imageSizePath = "w780/";
+        final String backdropImageSize = "w780/";
+        final String thumbnailSize = "w185";
 
         public MovieDetailFragment() {
             // Required empty public constructor
@@ -68,9 +69,15 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                 /*Fill the backdrop image view */
                 ImageView backDropImageView = (ImageView) rootView.findViewById(R.id.movie_detail_fragment_backdrop_image);
-                String picassoPath = IMAGE_BASE_URL+imageSizePath+movie.getBackdropPath();
-                Picasso.with(getContext()).load(picassoPath).into(backDropImageView);
+                String picassoPath_backdrop = IMAGE_BASE_URL+backdropImageSize+movie.getBackdropPath();
+                Picasso.with(getContext()).load(picassoPath_backdrop).into(backDropImageView);
                 backDropImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
+                /*Show the thumbnail image*/
+                ImageView thumbnailImageView = (ImageView) rootView.findViewById(R.id.movie_detail_fragment_thumbnail_image);
+                String picassoPath_thumbnail = IMAGE_BASE_URL+thumbnailSize+movie.getPosterPath();
+                Picasso.with(getContext()).load(picassoPath_thumbnail).into(thumbnailImageView);
+
 
                 /*Populate the movie details */
                 LinearLayout detailsLayout = (LinearLayout) rootView.findViewById(R.id.movie_detail_fragment_details_layout);

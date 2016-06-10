@@ -11,12 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/movie_detail_fragment_backdrop_image"
-        />
+        android:layout_alignParentTop="true"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/movie_detail_fragment_thumbnail_image"
+        android:layout_below="@id/movie_detail_fragment_backdrop_image"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/movie_detail_fragment_details_layout"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_below="@id/movie_detail_fragment_backdrop_image"
+        android:layout_toRightOf="@id/movie_detail_fragment_thumbnail_image">
 
         <TextView
             android:layout_width="wrap_content"
