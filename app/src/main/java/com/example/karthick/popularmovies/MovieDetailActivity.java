@@ -70,6 +70,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 ImageView backDropImageView = (ImageView) rootView.findViewById(R.id.movie_detail_fragment_backdrop_image);
                 String picassoPath = IMAGE_BASE_URL+imageSizePath+movie.getBackdropPath();
                 Picasso.with(getContext()).load(picassoPath).into(backDropImageView);
+                backDropImageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
                 /*Populate the movie details */
                 LinearLayout detailsLayout = (LinearLayout) rootView.findViewById(R.id.movie_detail_fragment_details_layout);
