@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="275dp"
     android:id="@+id/movie_detail_fragment"
     tools:context=".MovieDetailActivity"
     >
@@ -11,13 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/movie_detail_fragment_backdrop_image"
+        android:scaleType="fitXY"
         android:layout_alignParentTop="true"/>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
         android:id="@+id/movie_detail_fragment_thumbnail_image"
-        android:layout_below="@id/movie_detail_fragment_backdrop_image"/>
+        android:scaleType="fitXY"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="15dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -25,7 +28,9 @@
         android:id="@+id/movie_detail_fragment_details_layout"
         android:orientation="vertical"
         android:layout_below="@id/movie_detail_fragment_backdrop_image"
-        android:layout_toRightOf="@id/movie_detail_fragment_thumbnail_image">
+        android:layout_toRightOf="@id/movie_detail_fragment_thumbnail_image"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
