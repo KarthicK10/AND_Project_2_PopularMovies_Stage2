@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.karthick.popularmovies.domain.Movie;
@@ -88,9 +89,12 @@ public class MovieDetailActivity extends AppCompatActivity {
                 TextView releaseDateText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_release_date);
                 DateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
                 releaseDateText.setText(dateFormat.format(movie.getReleaseDate()));
+                /*Show Rating Bar */
+                RatingBar ratingBar = (RatingBar) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_ratingbar);
+                ratingBar.setRating((float)movie.getUserRating()/2);
                 /*Show User Rating*/
                 TextView userRatingText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_user_rating);
-                userRatingText.setText(String.format("%.2f", movie.getUserRating()));
+                userRatingText.setText(String.format("%.2f", movie.getUserRating()/2 ));
 
             }
             return rootView;
