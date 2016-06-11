@@ -25,8 +25,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.movie_detail_activity);
        if(savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_details_container, new MovieDetailFragment())
-                    .add(R.id.movie_details_container, new MovieSynapsisFragment())
+                    .add(R.id.movie_details_layout, new MovieDetailFragment())
+                    .add(R.id.movie_details_layout, new MovieSynapsisFragment())
                     .commit();
         }
     }
