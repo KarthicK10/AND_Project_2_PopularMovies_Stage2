@@ -18,6 +18,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/movie_synapsis_fragment_textview"
         android:layout_margin="16dp"
+        android:fontFamily="serif"
+        android:textSize="15dp"
+        android:lineSpacingExtra="5dp"
         />
 
 </FrameLayout>
