@@ -84,13 +84,14 @@ public class MovieDetailActivity extends AppCompatActivity {
                 /*Show Original Title */
                 TextView originalTitleText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_original_title);
                 originalTitleText.setText(movie.getOriginalTitle());
+                /*Show Release Date */
+                TextView releaseDateText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_release_date);
+                DateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
+                releaseDateText.setText(dateFormat.format(movie.getReleaseDate()));
                 /*Show User Rating*/
                 TextView userRatingText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_user_rating);
                 userRatingText.setText(String.format("%.2f", movie.getUserRating()));
-                /*Show Release Date */
-                TextView releaseDateText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_release_date);
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
-                releaseDateText.setText(dateFormat.format(movie.getReleaseDate()));
+
             }
             return rootView;
         }
