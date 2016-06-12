@@ -5,17 +5,36 @@
     <string name="app_name">Popular Movies</string>
 
     <!-- Menu Strings -->
-
-    <string name="action_settings">Settings</string>
-
+        <string name="action_settings">Settings</string>
     <!-- End Menu Strings -->
 
     <!-- Movie Details Strings/Constants-->
-
-    <string name="movie_detail_release_date_format">MMM dd yyyy</string>
-
+        <string name="movie_detail_release_date_format">MMM dd yyyy</string>
     <!-- End Movie Details Strings/Constants-->
 
+    <!--Preference Settings -->
 
+        <!-- Label for Sort Order Settings -->
+        <string name="pref_sort_order_label">Sort Order</string>
+
+        <!-- Key name for storing sort order in shared preferences -->
+        <string name="pref_sort_order_key" translatable="false">sortOrder</string>
+
+        <!-- Default sort order -->
+        <string name="pref_sort_order_default" translatable="false">Popular</string>
+
+        <!-- Entries for Sort Order Settings-->
+        <string-array name="sort_order_entries">
+            <item>POPULAR</item>
+            <item>TOP RATED</item>
+        </string-array>
+
+        <!-- Entry values for Order Settngs -->
+        <string-array name="sort_order_entry_values">
+            <item>Popular</item>
+            <item>Top Rated</item>
+        </string-array>
+
+    <!-- End Preference Settings -->
 
 </resources>
