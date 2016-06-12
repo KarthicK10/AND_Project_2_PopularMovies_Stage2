@@ -1,9 +1,11 @@
 package com.example.karthick.popularmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.karthick.popularmovies.domain.Movie;
-import com.example.karthick.popularmovies.domain.TheMovieDBAPIContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,6 +60,10 @@ public class MoviesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        updateMovies();
+    }
+
+    private void updateMovies(){
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
         fetchMoviesTask.execute();
     }
@@ -115,15 +120,17 @@ public class MoviesFragment extends Fragment {
 
             // Will contain the raw JSON response as a string.
             String moviesJsonStr = null;
-            final String apiKey = TheMovieDBAPIContract.movieDbApiKey;
+            final String apiKey = getString(R.string.movieDbApiKey);
 
 
             try{
                 //Construct the URL for fetching the
-                final String MOVIE_API_BASE_URL = TheMovieDBAPIContract.movieDbBaseUrl;
-                final String API_KEY_PARAM = TheMovieDBAPIContract.movieDbApiKeyParam;
+                final String MOVIE_API_BASE_URL = getString(R.string.movieDbBaseUrl);
+                final String API_KEY_PARAM = getString(R.string.movieDbApiKeyParam);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String sortOrderPath = prefs.getString(getString(R.string.pref_sort_order_key), getString(R.string.pref_sort_order_default));
 
-                Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL + TheMovieDBAPIContract.movieDbPopular).buildUpon()
+                Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL + sortOrderPath).buildUpon()
                                     .appendQueryParameter(API_KEY_PARAM, apiKey)
                                     .build();
                 URL url = new URL(moviesApiUri.toString());
@@ -193,15 +200,15 @@ public class MoviesFragment extends Fragment {
             ArrayList<Movie> moviesArrayList = new ArrayList<>(); // The result list of movies to be returned.
 
             //These are the names of the JSON object that needs to be extracted
-            final String MDB_RESULTS = TheMovieDBAPIContract.mdb_json_results;
-            final String MDB_ID = TheMovieDBAPIContract.mdb_json_id;
-            final String MDB_ORIGINAL_TITLE = TheMovieDBAPIContract.mdb_json_original_title;
-            final String MDB_POSTER_PATH = TheMovieDBAPIContract.mdb_json_poster_path;
-            final String MDB_BACKDROP_PATH = TheMovieDBAPIContract.mdb_json_backdrop_path;
-            final String MDB_OVERVIEW = TheMovieDBAPIContract.mdb_json_overview;
-            final String MDB_RELEASE_DATE = TheMovieDBAPIContract.mdb_json_release_date;
-            final String MDB_VOTE_AVERAGE = TheMovieDBAPIContract.mdb_json_vote_average;
-            final String MDB_RELEASE_DATE_FORMAT = TheMovieDBAPIContract.mdb_json_release_date_format;
+            final String MDB_RESULTS = getString(R.string.mdb_json_results);
+            final String MDB_ID = getString(R.string.mdb_json_id);
+            final String MDB_ORIGINAL_TITLE = getString(R.string.mdb_json_original_title);
+            final String MDB_POSTER_PATH = getString(R.string.mdb_json_poster_path);
+            final String MDB_BACKDROP_PATH = getString(R.string.mdb_json_backdrop_path);
+            final String MDB_OVERVIEW = getString(R.string.mdb_json_overview);
+            final String MDB_RELEASE_DATE = getString(R.string.mdb_json_release_date);
+            final String MDB_VOTE_AVERAGE = getString(R.string.mdb_json_vote_average);
+            final String MDB_RELEASE_DATE_FORMAT = getString(R.string.mdb_json_release_date_format);
 
             JSONObject moviesJson = new JSONObject(moviesJsonStr);
             JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);

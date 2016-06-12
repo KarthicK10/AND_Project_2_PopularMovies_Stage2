@@ -13,7 +13,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.karthick.popularmovies.domain.Movie;
-import com.example.karthick.popularmovies.domain.TheMovieDBAPIContract;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -41,20 +40,14 @@ public class MovieDetailActivity extends AppCompatActivity {
      */
     public static class MovieDetailFragment extends Fragment {
 
-        final String IMAGE_BASE_URL = TheMovieDBAPIContract.mdb_image_baseUrl;
-        final String backdropImageSize = TheMovieDBAPIContract.mdb_image_size_780;
-        final String thumbnailSize = TheMovieDBAPIContract.mdb_image_size_185;
-
-        public MovieDetailFragment() {
+       public MovieDetailFragment() {
             // Required empty public constructor
         }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (getArguments() != null) {
 
-            }
         }
 
         @Override
@@ -68,6 +61,11 @@ public class MovieDetailActivity extends AppCompatActivity {
             Intent openMovieDetailsIntent = getActivity().getIntent();
             if(openMovieDetailsIntent != null && openMovieDetailsIntent.hasExtra(Movie.MOVIE_PARCEL_KEY)){
                 Movie movie = (Movie) openMovieDetailsIntent.getParcelableExtra(Movie.MOVIE_PARCEL_KEY);
+
+
+                final String IMAGE_BASE_URL = getString(R.string.mdb_image_baseUrl);
+                final String backdropImageSize = getString(R.string.mdb_image_size_780);
+                final String thumbnailSize = getString(R.string.mdb_image_size_185);
 
                 /*Fill the backdrop image view */
                 ImageView backDropImageView = (ImageView) rootView.findViewById(R.id.movie_detail_fragment_backdrop_image);
