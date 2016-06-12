@@ -4,6 +4,12 @@
     <!-- Application name -->
     <string name="app_name">Popular Movies</string>
 
+    <!-- Menu Strings -->
+
+    <string name="action_settings">Settings</string>
+
+    <!-- End Menu Strings -->
+
     <!-- Movie Details Strings/Constants-->
 
     <string name="movie_detail_release_date_format">MMM dd yyyy</string>
