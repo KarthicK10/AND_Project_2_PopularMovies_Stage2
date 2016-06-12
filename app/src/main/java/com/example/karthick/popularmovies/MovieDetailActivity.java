@@ -13,6 +13,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.karthick.popularmovies.domain.Movie;
+import com.example.karthick.popularmovies.domain.TheMovieDBAPIContract;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -40,9 +41,9 @@ public class MovieDetailActivity extends AppCompatActivity {
      */
     public static class MovieDetailFragment extends Fragment {
 
-        final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-        final String backdropImageSize = "w780/";
-        final String thumbnailSize = "w185";
+        final String IMAGE_BASE_URL = TheMovieDBAPIContract.mdb_image_baseUrl;
+        final String backdropImageSize = TheMovieDBAPIContract.mdb_image_size_780;
+        final String thumbnailSize = TheMovieDBAPIContract.mdb_image_size_185;
 
         public MovieDetailFragment() {
             // Required empty public constructor
@@ -87,7 +88,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 originalTitleText.setText(movie.getOriginalTitle());
                 /*Show Release Date */
                 TextView releaseDateText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_release_date);
-                DateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
+                DateFormat dateFormat = new SimpleDateFormat(getString(R.string.movie_detail_release_date_format));
                 releaseDateText.setText(dateFormat.format(movie.getReleaseDate()));
                 /*Show Rating Bar */
                 RatingBar ratingBar = (RatingBar) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_ratingbar);

@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.example.karthick.popularmovies.domain.Movie;
+import com.example.karthick.popularmovies.domain.TheMovieDBAPIContract;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -43,13 +44,13 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
         Movie movie = getItem(position);
         String posterPath = movie.getPosterPath();
-        final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-        String imageSizePath = "w500/";
+        final String IMAGE_BASE_URL = TheMovieDBAPIContract.mdb_image_baseUrl;
+        String imageSizePath = TheMovieDBAPIContract.mdb_image_size_500;
 
         /*Load the image view by fetching image from picasso using the movie's poster path */
-        ImageView poseterImageView = (ImageView)rootView.findViewById(R.id.grid_item_movie_poster_imageView);
+        ImageView posterImageView = (ImageView)rootView.findViewById(R.id.grid_item_movie_poster_imageView);
         String picassoPath = IMAGE_BASE_URL+imageSizePath+movie.getPosterPath();
-        Picasso.with(getContext()).load(picassoPath).into(poseterImageView);
+        Picasso.with(getContext()).load(picassoPath).into(posterImageView);
 
         return rootView;
     }

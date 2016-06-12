@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.karthick.popularmovies.domain.Movie;
-import com.example.karthick.popularmovies.domain.MoviesSortOrder;
+import com.example.karthick.popularmovies.domain.TheMovieDBAPIContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -115,19 +115,17 @@ public class MoviesFragment extends Fragment {
 
             // Will contain the raw JSON response as a string.
             String moviesJsonStr = null;
-            String apiKey = "a6e98d8141a8b5f0c82333f52d90bffd";
-            MoviesSortOrder moviesSortOrder = MoviesSortOrder.POPULAR;
+            final String apiKey = TheMovieDBAPIContract.movieDbApiKey;
+
 
             try{
                 //Construct the URL for fetching the
-                final String MOVIE_API_BASE_URL = "https://api.themoviedb.org/3/movie/popular";
-                final String API_KEY_PARAM = "api_key";
+                final String MOVIE_API_BASE_URL = TheMovieDBAPIContract.movieDbBaseUrl;
+                final String API_KEY_PARAM = TheMovieDBAPIContract.movieDbApiKeyParam;
 
-                Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL).buildUpon()
-                                    //.appendPath(moviesSortOrder.getEndPoint())
+                Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL + TheMovieDBAPIContract.movieDbPopular).buildUpon()
                                     .appendQueryParameter(API_KEY_PARAM, apiKey)
                                     .build();
-
                 URL url = new URL(moviesApiUri.toString());
 
                 Log.i(LOG_TAG, "movies API Uri :" + moviesApiUri.toString());
@@ -192,17 +190,18 @@ public class MoviesFragment extends Fragment {
         /*Function to get the movies data from the JSON string */
         private ArrayList<Movie> getMoviesFromJSON (String moviesJsonStr) throws JSONException{
 
-            ArrayList<Movie> moviesArrayList = new ArrayList<Movie>(); // The result list of movies to be returned.
+            ArrayList<Movie> moviesArrayList = new ArrayList<>(); // The result list of movies to be returned.
 
             //These are the names of the JSON object that needs to be extracted
-            final String MDB_RESULTS = "results";
-            final String MDB_ID = "id";
-            final String MDB_ORIGINAL_TITLE = "original_title";
-            final String MDB_POSTER_PATH = "poster_path";
-            final String MDB_BACKDROP_PATH = "backdrop_path";
-            final String MDB_OVERVIEW = "overview";
-            final String MDB_RELEASE_DATE = "release_date";
-            final String MDB_VOTE_AVERAGE = "vote_average";
+            final String MDB_RESULTS = TheMovieDBAPIContract.mdb_json_results;
+            final String MDB_ID = TheMovieDBAPIContract.mdb_json_id;
+            final String MDB_ORIGINAL_TITLE = TheMovieDBAPIContract.mdb_json_original_title;
+            final String MDB_POSTER_PATH = TheMovieDBAPIContract.mdb_json_poster_path;
+            final String MDB_BACKDROP_PATH = TheMovieDBAPIContract.mdb_json_backdrop_path;
+            final String MDB_OVERVIEW = TheMovieDBAPIContract.mdb_json_overview;
+            final String MDB_RELEASE_DATE = TheMovieDBAPIContract.mdb_json_release_date;
+            final String MDB_VOTE_AVERAGE = TheMovieDBAPIContract.mdb_json_vote_average;
+            final String MDB_RELEASE_DATE_FORMAT = TheMovieDBAPIContract.mdb_json_release_date_format;
 
             JSONObject moviesJson = new JSONObject(moviesJsonStr);
             JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);
@@ -220,7 +219,7 @@ public class MoviesFragment extends Fragment {
                     String backdropPath = movie.getString(MDB_BACKDROP_PATH);
                     String synapsis = movie.getString(MDB_OVERVIEW);
                     double userRating = movie.getDouble(MDB_VOTE_AVERAGE);
-                    DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+                    DateFormat format = new SimpleDateFormat(MDB_RELEASE_DATE_FORMAT);
                     Date releaseDate = format.parse(movie.getString(MDB_RELEASE_DATE));
 
                     //Add the movie to the movies array list result set.
