@@ -8,8 +8,9 @@
    <GridView
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:id="@+id/gridview_movies"
-       android:numColumns="2">
+       android:id="@+id/grid_view_movies"
+       android:numColumns="auto_fit"
+       >
 
    </GridView>
 
