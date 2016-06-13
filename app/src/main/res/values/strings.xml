@@ -10,6 +10,7 @@
 
     <!-- Movie Details Strings/Constants-->
     <string name="movie_detail_release_date_format">MMM dd yyyy</string>
+    <string name="movie_detail_rating_suffix">&#160;out of 10</string>
     <!-- End Movie Details Strings/Constants-->
 
     <!--Preference Settings -->

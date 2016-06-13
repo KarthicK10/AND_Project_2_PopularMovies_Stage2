@@ -93,9 +93,9 @@ public class MovieDetailsFragment extends Fragment {
             /*Show Rating Bar */
             RatingBar ratingBar = (RatingBar) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_ratingbar);
             ratingBar.setRating((float)movie.getUserRating()/2);
-            /*Show User Rating*/
+            /*Show User Rating*/ //TODO - Should we even show it in number? as we are anyway showing in stars? Does the user care?
             TextView userRatingText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_user_rating);
-            userRatingText.setText(String.format("%.2f", movie.getUserRating()/2 ));
+            userRatingText.setText(String.format("%.2f", movie.getUserRating() ) + getString(R.string.movie_detail_rating_suffix));
 
         }
         return rootView;
