@@ -77,7 +77,7 @@ public class MoviesFragment extends Fragment {
         /*Initiate an array adapter to supply text views to the grids*/
         moviesGridAdapter = new MovieAdapter(getActivity(), new ArrayList<Movie>());
 
-        GridView moviesGrid = (GridView) rootView.findViewById(R.id.gridview_movies);
+        GridView moviesGrid = (GridView) rootView.findViewById(R.id.grid_view_movies);
         moviesGrid.setAdapter(moviesGridAdapter);
         moviesGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -34,7 +34,6 @@ public class MovieSynapsisFragment extends android.support.v4.app.Fragment {
      * @param movie domain object.
      * @return A new instance of fragment MovieSynapsisFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MovieSynapsisFragment newInstance(Movie movie) {
         MovieSynapsisFragment fragment = new MovieSynapsisFragment();
         Bundle args = new Bundle();
