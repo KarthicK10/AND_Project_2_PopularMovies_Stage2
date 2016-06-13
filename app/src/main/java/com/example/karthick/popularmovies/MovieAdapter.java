@@ -35,27 +35,21 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
         Context context = getContext();
 
-        /*Recycle old view if possible, if not create a new view */
-        View rootView;
-        if(convertView != null){
-            rootView = convertView;
+        /*Recycle old view if possible*/
+        if(convertView == null){
+            convertView = LayoutInflater.from(context).inflate(R.layout.grid_item_movie, parent, false);
         }
-        else{
-            rootView = LayoutInflater.from(context).inflate(R.layout.grid_item_movie, parent, false);
-        }
-
-
         Movie movie = getItem(position);
         String posterPath = movie.getPosterPath();
         final String IMAGE_BASE_URL = context.getString(R.string.mdb_image_baseUrl);
         String imageSizePath = context.getString(R.string.mdb_image_size_500);
 
         /*Load the image view by fetching image from picasso using the movie's poster path */
-        ImageView posterImageView = (ImageView)rootView.findViewById(R.id.grid_item_movie_poster_imageView);
+        ImageView posterImageView = (ImageView)convertView.findViewById(R.id.grid_item_movie_poster_imageView);
         String picassoPath = IMAGE_BASE_URL+imageSizePath+movie.getPosterPath();
-        Picasso.with(getContext()).load(picassoPath).into(posterImageView);
+        Picasso.with(context).load(picassoPath).into(posterImageView);
 
-        return rootView;
+        return convertView;
     }
 }
 
