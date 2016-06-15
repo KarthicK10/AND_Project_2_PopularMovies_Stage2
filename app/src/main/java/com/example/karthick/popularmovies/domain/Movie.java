@@ -11,6 +11,7 @@ import java.util.Date;
 public class Movie implements Parcelable{
 
     public static final String MOVIE_PARCEL_KEY = "MOVIE_PARCEL";
+    public static final String MOVIES_LIST_PARCEL_KEY = "MOVIES_LIST_PARCEL";
 
     private int id;
     private String originalTitle;

@@ -39,8 +39,10 @@ import java.util.Date;
  */
 public class MoviesFragment extends Fragment {
 
+    private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
     private MovieAdapter moviesGridAdapter;
-
+    private ArrayList<Movie> mMoviesList = new ArrayList<>();
+    private String mSortOrderPath;
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -48,7 +50,30 @@ public class MoviesFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreate: Called");
         super.onCreate(savedInstanceState);
+
+
+        if(savedInstanceState == null || !savedInstanceState.containsKey(Movie.MOVIES_LIST_PARCEL_KEY)
+            || mSortOrderPath == null || !mSortOrderPath.equals(getSortOrderPath()) ){
+
+            /*
+             * Either this is the first creation and therefore state cannot be retrieved from savedInstanceState
+             * OR this is creation after screen orientation change which happened when user was changing sort order.
+             * So, call API with current sort order to update the movies
+             */
+
+            mSortOrderPath = getSortOrderPath();
+            updateMovies();
+        }
+        else{
+            /* On Screen orientation change,
+                the fragment gets recreated but the state can be restored from savedInstanceState
+               There is no need to call the API to update movies provided the orientation did not change
+                while the user was changing the SORT ORDER settings.
+                        */
+            mMoviesList = savedInstanceState.getParcelableArrayList(Movie.MOVIES_LIST_PARCEL_KEY);
+        }
 
     }
 
@@ -59,11 +84,47 @@ public class MoviesFragment extends Fragment {
      */
     @Override
     public void onStart() {
+        Log.i(LOG_TAG, "onStart: Called");
         super.onStart();
-        updateMovies();
+
+        if(!mSortOrderPath.equals(getSortOrderPath())){
+            //On return from settings screen, the sort order is found to be changed by the user
+            //Update movies with current sort order
+            mSortOrderPath = getSortOrderPath();
+            updateMovies();
+        }
+
+    }
+
+    /**
+     * Called to ask the fragment to save its current dynamic state, so it
+     * can later be reconstructed in a new instance of its process is
+     * restarted.  If a new instance of the fragment later needs to be
+     * created, the data you place in the Bundle here will be available
+     * in the Bundle given to {@link #onCreate(Bundle)},
+     * {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}, and
+     * {@link #onActivityCreated(Bundle)}.
+     * <p/>
+     * <p>This corresponds to {@link MovieDetailActivity#onSaveInstanceState(Bundle)
+     * Activity.onSaveInstanceState(Bundle)} and most of the discussion there
+     * applies here as well.  Note however: <em>this method may be called
+     * at any time before {@link #onDestroy()}</em>.  There are many situations
+     * where a fragment may be mostly torn down (such as when placed on the
+     * back stack with no UI showing), but its state will not be saved until
+     * its owning activity actually needs to save its state.
+     *
+     * @param outState Bundle in which to place your saved state.
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.i(LOG_TAG, "onSaveInstanceState: Called");
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(Movie.MOVIES_LIST_PARCEL_KEY, mMoviesList);
+
     }
 
     private void updateMovies(){
+        Log.i(LOG_TAG, "updateMovies: Called");
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
         fetchMoviesTask.execute();
     }
@@ -71,11 +132,13 @@ public class MoviesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreateView: Called");
+
         /*Inflate the grid view*/
         View rootView = inflater.inflate(R.layout.movies_fragment, container, false);
 
         /*Initiate an array adapter to supply text views to the grids*/
-        moviesGridAdapter = new MovieAdapter(getActivity(), new ArrayList<Movie>());
+        moviesGridAdapter = new MovieAdapter(getActivity(), mMoviesList);
 
         GridView moviesGrid = (GridView) rootView.findViewById(R.id.grid_view_movies);
         moviesGrid.setAdapter(moviesGridAdapter);
@@ -90,6 +153,14 @@ public class MoviesFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    /*
+    * Method to get the sort order path from the shared preferences.
+    * */
+    private String getSortOrderPath(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        return prefs.getString(getString(R.string.pref_sort_order_key), getString(R.string.pref_sort_order_default));
     }
 
     private class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>>{
@@ -115,6 +186,7 @@ public class MoviesFragment extends Fragment {
 
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
+            Log.i(LOG_TAG, "doInBackground: called");
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
@@ -127,10 +199,8 @@ public class MoviesFragment extends Fragment {
                 //Construct the URL for fetching the
                 final String MOVIE_API_BASE_URL = getString(R.string.movieDbBaseUrl);
                 final String API_KEY_PARAM = getString(R.string.movieDbApiKeyParam);
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String sortOrderPath = prefs.getString(getString(R.string.pref_sort_order_key), getString(R.string.pref_sort_order_default));
 
-                Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL + sortOrderPath).buildUpon()
+                Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL + mSortOrderPath).buildUpon()
                                     .appendQueryParameter(API_KEY_PARAM, apiKey)
                                     .build();
                 URL url = new URL(moviesApiUri.toString());
@@ -254,11 +324,14 @@ public class MoviesFragment extends Fragment {
          */
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
+            Log.i(LOG_TAG, "onPostExecute: Called");
             if(movies != null){
                 moviesGridAdapter.clear();
                 for (Movie movie: movies) {
-                    moviesGridAdapter.add(movie);
+                    //moviesGridAdapter.add(movie);
+                    mMoviesList.add(movie);
                 }
+               // moviesGridAdapter.notifyDataSetChanged();
             }
         }
     }
