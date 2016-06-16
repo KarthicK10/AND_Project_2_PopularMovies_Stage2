@@ -42,7 +42,7 @@ public class MoviesFragment extends Fragment {
     private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
     private MovieAdapter moviesGridAdapter;
     private ArrayList<Movie> mMoviesList = new ArrayList<>();
-    private String mSortOrderPath;
+    private String mSortOrderPath; // the current sort order
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -123,6 +123,7 @@ public class MoviesFragment extends Fragment {
 
     }
 
+    /*Method to update the movies by calling theMovieDB API */
     private void updateMovies(){
         Log.i(LOG_TAG, "updateMovies: Called");
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
@@ -163,6 +164,7 @@ public class MoviesFragment extends Fragment {
         return prefs.getString(getString(R.string.pref_sort_order_key), getString(R.string.pref_sort_order_default));
     }
 
+    /*The AsyncTask to fetch the movies from theMovieDB API */
     private class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>>{
 
         private final String LOG_TAG = AsyncTask.class.getSimpleName();
