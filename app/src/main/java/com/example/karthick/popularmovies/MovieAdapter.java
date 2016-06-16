@@ -63,7 +63,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         Movie movie = getItem(position);
         String posterPath = movie.getPosterPath();
         final String IMAGE_BASE_URL = context.getString(R.string.mdb_image_baseUrl);
-        String imageSizePath = context.getString(R.string.mdb_image_size_500);
+        String imageSizePath = context.getString(R.string.mdb_image_size_342);
 
         /*Load the image view by fetching image from picasso using the movie's poster path */
         //ImageView posterImageView = (ImageView)convertView.findViewById(R.id.grid_item_movie_poster_imageView);
