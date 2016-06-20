@@ -64,7 +64,7 @@ public class MoviesFragment extends Fragment {
              */
 
             mSortOrderPath = getSortOrderPath();
-            updateMovies();
+            refreshMoviesListing();
         }
         else{
             /* On Screen orientation change,
@@ -91,7 +91,7 @@ public class MoviesFragment extends Fragment {
             //On return from settings screen, the sort order is found to be changed by the user
             //Update movies with current sort order
             mSortOrderPath = getSortOrderPath();
-            updateMovies();
+            refreshMoviesListing();
         }
 
     }
@@ -124,10 +124,19 @@ public class MoviesFragment extends Fragment {
     }
 
     /*Method to update the movies by calling theMovieDB API */
-    private void updateMovies(){
+    private void updateMovies(int page){
         Log.i(LOG_TAG, "updateMovies: Called");
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-        fetchMoviesTask.execute();
+        fetchMoviesTask.execute(page);
+    }
+
+    /*Refresh movies listing */
+    private void refreshMoviesListing(){
+        if(moviesGridAdapter != null){
+            mMoviesList.clear();
+            moviesGridAdapter.notifyDataSetChanged();
+        }
+        updateMovies(1);
     }
 
     @Override
@@ -146,8 +155,11 @@ public class MoviesFragment extends Fragment {
         //Attach the adapter to the recycler view
         moviesGrid.setAdapter(moviesGridAdapter);
         //Set Layout manager to position the items
-        moviesGrid.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        moviesGrid.setLayoutManager(gridLayoutManager);
 
+        //To improve smooth scrolling
+        moviesGrid.setHasFixedSize(true);
 
         moviesGrid.addOnItemTouchListener(
                 new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
@@ -161,20 +173,16 @@ public class MoviesFragment extends Fragment {
                 })
         );
 
-        /*
-        moviesGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        moviesGrid.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent openMovieDetailsIntent = new Intent(getActivity(), MovieDetailActivity.class);
-                Movie movie = moviesGridAdapter.getItem(position);
-                openMovieDetailsIntent.putExtra(Movie.MOVIE_PARCEL_KEY, movie);
-                startActivity(openMovieDetailsIntent);
+            public void onLoadMore(int page, int totalItemsCount) {
+                Log.i(LOG_TAG, "onLoadMore : page :" + page);
+                updateMovies(page+1);
             }
         });
 
-        */
-
-        return rootView;
+       return rootView;
     }
 
     /*
@@ -186,7 +194,7 @@ public class MoviesFragment extends Fragment {
     }
 
     /*The AsyncTask to fetch the movies from theMovieDB API */
-    private class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>>{
+    private class FetchMoviesTask extends AsyncTask<Integer, Void, ArrayList<Movie>>{
 
         private final String LOG_TAG = AsyncTask.class.getSimpleName();
 
@@ -205,7 +213,7 @@ public class MoviesFragment extends Fragment {
          * @see #publishProgress
          */
         @Override
-        protected ArrayList<Movie> doInBackground(Void... params) {
+        protected ArrayList<Movie> doInBackground(Integer... params) {
 
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
@@ -216,7 +224,8 @@ public class MoviesFragment extends Fragment {
             // Will contain the raw JSON response as a string.
             String moviesJsonStr = null;
             final String apiKey = getString(R.string.movieDbApiKey);
-
+            Integer pageNumber = params[0];
+            String page = pageNumber.toString();
 
             try{
                 //Construct the URL for fetching the
@@ -225,7 +234,7 @@ public class MoviesFragment extends Fragment {
 
                 Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL + mSortOrderPath).buildUpon()
                                     .appendQueryParameter(API_KEY_PARAM, apiKey)
-                                    .appendQueryParameter("page", "1")
+                                    .appendQueryParameter("page", page)
                                     .build();
                 URL url = new URL(moviesApiUri.toString());
 
@@ -351,8 +360,10 @@ public class MoviesFragment extends Fragment {
             Log.i(LOG_TAG, "onPostExecute: Called");
             if(movies != null){
                 int currentSize = moviesGridAdapter.getItemCount();
+                Log.i(LOG_TAG, "onPostExecute: currentSize : " + currentSize);
                 mMoviesList.addAll(movies);
                 moviesGridAdapter.notifyItemRangeInserted(currentSize, movies.size()-1);
+                Log.i(LOG_TAG, "onPostExecute: notifiedItemRangeInserted");
             }
         }
     }
