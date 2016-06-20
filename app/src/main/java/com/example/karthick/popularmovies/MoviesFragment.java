@@ -1,5 +1,6 @@
 package com.example.karthick.popularmovies;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -147,7 +148,20 @@ public class MoviesFragment extends Fragment {
         //Set Layout manager to position the items
         moviesGrid.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
-       /*
+
+        moviesGrid.addOnItemTouchListener(
+                new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Intent openMovieDetailsIntent = new Intent(getActivity(), MovieDetailActivity.class);
+                        Movie movie = moviesGridAdapter.getItem(position);
+                        openMovieDetailsIntent.putExtra(Movie.MOVIE_PARCEL_KEY, movie);
+                        startActivity(openMovieDetailsIntent);
+                    }
+                })
+        );
+
+        /*
         moviesGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

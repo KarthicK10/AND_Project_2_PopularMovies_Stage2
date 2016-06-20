@@ -11,6 +11,7 @@ import android.widget.ListView;
 import com.example.karthick.popularmovies.domain.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
     }
 
-    private List<Movie> mMoviesList;
+    private List<Movie> mMoviesList = new ArrayList<>();
     private Context mContext;
     private static String IMAGE_BASE_URL;
     private static String IMAGE_SIZE_PATH;
@@ -120,6 +121,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public int getItemCount() {
         return mMoviesList.size();
+    }
+
+    /*
+     * Returns the item from a specified position
+     *
+     * @param - The position to retrieve from
+     * @return - The movie item at position
+     */
+    public Movie getItem(int position){
+        return mMoviesList.get(position);
     }
 }
 
