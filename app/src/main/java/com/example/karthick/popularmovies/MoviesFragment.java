@@ -1,18 +1,17 @@
 package com.example.karthick.popularmovies;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 
 import com.example.karthick.popularmovies.domain.Movie;
 
@@ -135,14 +134,20 @@ public class MoviesFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreateView: Called");
 
-        /*Inflate the grid view*/
+        /*Inflate the grid view layout*/
         View rootView = inflater.inflate(R.layout.movies_fragment, container, false);
 
-        /*Initiate an array adapter to supply text views to the grids*/
-        moviesGridAdapter = new MovieAdapter(getActivity(), mMoviesList);
+        /*Initiate a Recycler View adapter to supply text views to the grids*/
+        moviesGridAdapter = new MovieAdapter(mMoviesList, getContext());
 
-        GridView moviesGrid = (GridView) rootView.findViewById(R.id.grid_view_movies);
+        //Lookup the recycler view in the layout
+        RecyclerView moviesGrid = (RecyclerView) rootView.findViewById(R.id.recycler_view_movies);
+        //Attach the adapter to the recycler view
         moviesGrid.setAdapter(moviesGridAdapter);
+        //Set Layout manager to position the items
+        moviesGrid.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+
+       /*
         moviesGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -152,6 +157,8 @@ public class MoviesFragment extends Fragment {
                 startActivity(openMovieDetailsIntent);
             }
         });
+
+        */
 
         return rootView;
     }
@@ -204,6 +211,7 @@ public class MoviesFragment extends Fragment {
 
                 Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL + mSortOrderPath).buildUpon()
                                     .appendQueryParameter(API_KEY_PARAM, apiKey)
+                                    .appendQueryParameter("page", "1")
                                     .build();
                 URL url = new URL(moviesApiUri.toString());
 
@@ -328,12 +336,9 @@ public class MoviesFragment extends Fragment {
         protected void onPostExecute(ArrayList<Movie> movies) {
             Log.i(LOG_TAG, "onPostExecute: Called");
             if(movies != null){
-                moviesGridAdapter.clear();
-                for (Movie movie: movies) {
-                    //moviesGridAdapter.add(movie);
-                    mMoviesList.add(movie);
-                }
-               // moviesGridAdapter.notifyDataSetChanged();
+                int currentSize = moviesGridAdapter.getItemCount();
+                mMoviesList.addAll(movies);
+                moviesGridAdapter.notifyItemRangeInserted(currentSize, movies.size()-1);
             }
         }
     }

@@ -5,18 +5,11 @@
     android:id="@+id/moviesContainer"
     tools:context="com.example.karthick.popularmovies.MoviesFragment">
 
-   <GridView
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:id="@+id/grid_view_movies"
-       android:numColumns="auto_fit"
-       android:layout_margin="0dp"
-       android:verticalSpacing="0dp"
-       android:stretchMode="columnWidth"
-       android:columnWidth="100dp"
-       android:horizontalSpacing="0dp"
-       >
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycler_view_movies"
+        />
 
-   </GridView>
 
 </FrameLayout>
