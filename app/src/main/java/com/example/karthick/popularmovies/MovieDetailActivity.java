@@ -45,7 +45,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                         .add(R.id.movie_details_layout, movieDetailFragment)
                         .add(R.id.movie_details_layout, new ContentSeperatorFragment())
                         .add(R.id.movie_details_layout, movieSynapsisFragment)
+                        .add(R.id.movie_details_layout, new ContentSeperatorFragment())
                         .commit();
+
+
             }
 
         }
