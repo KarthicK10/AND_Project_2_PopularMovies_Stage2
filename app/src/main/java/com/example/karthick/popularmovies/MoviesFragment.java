@@ -155,7 +155,8 @@ public class MoviesFragment extends Fragment {
         //Attach the adapter to the recycler view
         moviesGrid.setAdapter(moviesGridAdapter);
         //Set Layout manager to position the items
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        GridLayoutManager gridLayoutManager =
+                new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_columns));
         moviesGrid.setLayoutManager(gridLayoutManager);
 
         //To improve smooth scrolling
