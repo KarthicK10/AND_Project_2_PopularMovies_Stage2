@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -42,8 +43,13 @@ public class MoviesFragment extends Fragment {
     private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
     private MovieAdapter moviesGridAdapter;
     private ArrayList<Movie> mMoviesList = new ArrayList<>();
-   // private String mSortOrderPath; // the current sort order
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
+
+    /*To retain scroll state on screen rotate */
+    private GridLayoutManager gridLayoutManager;
+    Parcelable gridState;
+    public static final String GRID_STATE = "grid_state";
+    /*End To retain scroll state on screen rotate */
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -67,6 +73,10 @@ public class MoviesFragment extends Fragment {
                 the fragment gets recreated but the state can be restored from savedInstanceState
              */
             mMoviesList = savedInstanceState.getParcelableArrayList(Movie.MOVIES_LIST_PARCEL_KEY);
+
+            /*On Screen orientation change,
+             * retrieve the scroll position of the grid as it was in previous orientation */
+            gridState = savedInstanceState.getParcelable(GRID_STATE);
         }
     }
 
@@ -79,7 +89,13 @@ public class MoviesFragment extends Fragment {
     public void onStart() {
         Log.i(LOG_TAG, "onStart: Called");
         super.onStart();
+        if(gridState != null){
+            /*Apply the grid state to retain the scroll postion as it was before screen rotation */
+            gridLayoutManager.onRestoreInstanceState(gridState);
+        }
     }
+
+
 
     /**
      * Called to ask the fragment to save its current dynamic state, so it
@@ -105,7 +121,10 @@ public class MoviesFragment extends Fragment {
         Log.i(LOG_TAG, "onSaveInstanceState: Called");
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(Movie.MOVIES_LIST_PARCEL_KEY, mMoviesList);
-
+        if(gridLayoutManager != null){
+            /*Save the grid state to for retaining the scroll position on screen rotation */
+            outState.putParcelable(GRID_STATE, gridLayoutManager.onSaveInstanceState());
+        }
     }
 
     /*Method to update the movies by calling theMovieDB API */
@@ -170,7 +189,7 @@ public class MoviesFragment extends Fragment {
         //Attach the adapter to the recycler view
         moviesGrid.setAdapter(moviesGridAdapter);
         //Set Layout manager to position the items
-        GridLayoutManager gridLayoutManager =
+        gridLayoutManager =
                 new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_columns));
         moviesGrid.setLayoutManager(gridLayoutManager);
 
