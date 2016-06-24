@@ -42,7 +42,8 @@ public class MoviesFragment extends Fragment {
     private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
     private MovieAdapter moviesGridAdapter;
     private ArrayList<Movie> mMoviesList = new ArrayList<>();
-    private String mSortOrderPath; // the current sort order
+   // private String mSortOrderPath; // the current sort order
+    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -54,27 +55,19 @@ public class MoviesFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
 
-        if(savedInstanceState == null || !savedInstanceState.containsKey(Movie.MOVIES_LIST_PARCEL_KEY)
-            || mSortOrderPath == null || !mSortOrderPath.equals(getSortOrderPath()) ){
+        if(savedInstanceState == null || !savedInstanceState.containsKey(Movie.MOVIES_LIST_PARCEL_KEY) ){
 
             /*
-             * Either this is the first creation and therefore state cannot be retrieved from savedInstanceState
-             * OR this is creation after screen orientation change which happened when user was changing sort order.
-             * So, call API with current sort order to update the movies
+             * This is the first creation and therefore state cannot be retrieved from savedInstanceState
              */
-
-            mSortOrderPath = getSortOrderPath();
             refreshMoviesListing();
         }
         else{
             /* On Screen orientation change,
                 the fragment gets recreated but the state can be restored from savedInstanceState
-               There is no need to call the API to update movies provided the orientation did not change
-                while the user was changing the SORT ORDER settings.
-                        */
+             */
             mMoviesList = savedInstanceState.getParcelableArrayList(Movie.MOVIES_LIST_PARCEL_KEY);
         }
-
     }
 
     /**
@@ -86,14 +79,6 @@ public class MoviesFragment extends Fragment {
     public void onStart() {
         Log.i(LOG_TAG, "onStart: Called");
         super.onStart();
-
-        if(!mSortOrderPath.equals(getSortOrderPath())){
-            //On return from settings screen, the sort order is found to be changed by the user
-            //Update movies with current sort order
-            mSortOrderPath = getSortOrderPath();
-            refreshMoviesListing();
-        }
-
     }
 
     /**
@@ -139,9 +124,39 @@ public class MoviesFragment extends Fragment {
         updateMovies(1);
     }
 
+    private void setPreferenceChangeListener(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener(){
+            /**
+             * Called when a shared preference is changed, added, or removed. This
+             * may be called even if a preference is set to its existing value.
+             * <p>
+             * <p>This callback will be run on your main thread.
+             *
+             * @param sharedPreferences The {@link SharedPreferences} that received
+             *                          the change.
+             * @param key               The key of the preference that was changed, added, or
+             */
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                Log.i(LOG_TAG, "Preference Changed : " + key);
+                Log.i(LOG_TAG, "sort order : " + getString(R.string.pref_sort_order_key));
+                if(key.equals(getString(R.string.pref_sort_order_key))){
+                    refreshMoviesListing();
+                }
+            }
+        };
+
+        prefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        setPreferenceChangeListener();
+
         Log.i(LOG_TAG, "onCreateView: Called");
 
         /*Inflate the grid view layout*/
@@ -233,7 +248,7 @@ public class MoviesFragment extends Fragment {
                 final String MOVIE_API_BASE_URL = getString(R.string.movieDbBaseUrl);
                 final String API_KEY_PARAM = getString(R.string.movieDbApiKeyParam);
 
-                Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL + mSortOrderPath).buildUpon()
+                Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL + getSortOrderPath()).buildUpon()
                                     .appendQueryParameter(API_KEY_PARAM, apiKey)
                                     .appendQueryParameter("page", page)
                                     .build();
