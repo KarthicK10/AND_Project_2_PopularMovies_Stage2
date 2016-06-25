@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    The values in this resource xml file define the contract
+    between Popular Movies app and theMovieDB service.
+    This includes the api call paths and the JSON object names in the API result
+
+    NOTE: API Key to be added for movieDbApiKey resource
+-->
+
+<resources>
+
+    <!-- Base Url and API key param name and value -->
+    <string name="movieDbBaseUrl">https://api.themoviedb.org/3</string>
+    <string name="movieDbApiKey">Please add your API Key here</string>
+    <string name="movieDbApiKeyParam">api_key</string>
+
+    <!-- endpoints -->
+    <string name="mdb_path_popular">/movie/popular</string>
+    <string name="mdb_path_top_rated">/movie/top_rated</string>
+    <!--End endpoints -->
+
+    <!-- JSON object names in the JSON result from theMovieDB API -->
+    <string name="mdb_json_results">results</string>
+    <string name="mdb_json_id">id</string>
+    <string name="mdb_json_original_title">original_title</string>
+    <string name="mdb_json_poster_path">poster_path</string>
+    <string name="mdb_json_backdrop_path">backdrop_path</string>
+    <string name="mdb_json_overview">overview</string>
+    <string name="mdb_json_release_date">release_date</string>
+    <string name="mdb_json_vote_average">vote_average</string>
+    <string name="mdb_json_release_date_format">yyyy-mm-dd</string>
+    <!-- End JSON object names in the JSON result from theMovieDB API -->
+
+    <!-- base url and endpoints for different image sizes-->
+    <string name="mdb_image_baseUrl">http://image.tmdb.org/t/p/</string>
+    <string name="mdb_image_size_92">w92/</string>
+    <string name="mdb_image_size_154">w154/</string>
+    <string name="mdb_image_size_185">w185/</string>
+    <string name="mdb_image_size_342">w342/</string>
+    <string name="mdb_image_size_500">w500/</string>
+    <string name="mdb_image_size_780">w780/</string>
+    <string name="mdb_image_size_original">original/</string>
+    <!-- End base url and endpoints for different image sizes-->
+
+</resources>
