@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
 import com.example.karthick.popularmovies.domain.Movie;
-import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -73,13 +73,15 @@ public class MovieDetailsFragment extends Fragment {
 
             /*Fill the backdrop image view */
             ImageView backDropImageView = (ImageView) rootView.findViewById(R.id.movie_detail_fragment_backdrop_image);
-            String picassoPath_backdrop = IMAGE_BASE_URL+backdropImageSize+movie.getBackdropPath();
-            Picasso.with(getContext()).load(picassoPath_backdrop).into(backDropImageView);
+            String imagePath_backdrop = IMAGE_BASE_URL+backdropImageSize+movie.getBackdropPath();
+            AQuery aqBackDrop = new AQuery(backDropImageView);
+            aqBackDrop.id(R.id.movie_detail_fragment_backdrop_image).image(imagePath_backdrop);
 
             /*Show the thumbnail image*/
             ImageView thumbnailImageView = (ImageView) rootView.findViewById(R.id.movie_detail_fragment_thumbnail_image);
-            String picassoPath_thumbnail = IMAGE_BASE_URL+thumbnailSize+movie.getPosterPath();
-            Picasso.with(getContext()).load(picassoPath_thumbnail).into(thumbnailImageView);
+            String imagePath_thumbnail = IMAGE_BASE_URL+thumbnailSize+movie.getPosterPath();
+            AQuery aqThumbnail = new AQuery(thumbnailImageView);
+            aqThumbnail.id(R.id.movie_detail_fragment_thumbnail_image).image(imagePath_thumbnail);
 
             /*Populate the movie details */
             LinearLayout detailsLayout = (LinearLayout) rootView.findViewById(R.id.movie_detail_fragment_details_layout);

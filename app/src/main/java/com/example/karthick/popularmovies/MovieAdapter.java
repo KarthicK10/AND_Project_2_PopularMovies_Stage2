@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.androidquery.AQuery;
 import com.example.karthick.popularmovies.domain.Movie;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         mMoviesList = movieList;
         mContext = context;
         IMAGE_BASE_URL = mContext.getString(R.string.mdb_image_baseUrl);
-        IMAGE_SIZE_PATH = mContext.getString(R.string.mdb_image_size_342);
+        IMAGE_SIZE_PATH = mContext.getString(R.string.mdb_image_size_154);
     }
 
     /**
@@ -105,11 +105,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
 
         /*Load the image view by fetching image from picasso using the movie's poster path */
-        String picassoPath = IMAGE_BASE_URL+IMAGE_SIZE_PATH+movie.getPosterPath();
+        String imagePath = IMAGE_BASE_URL+IMAGE_SIZE_PATH+movie.getPosterPath();
 
         //Set the views based on the data model
         ImageView posterImageView = movieViewHolder.posterImageView;
-        Picasso.with(mContext).load(picassoPath).into(posterImageView);
+        AQuery aq = new AQuery(posterImageView);
+        aq.id(R.id.grid_item_movie_poster_imageView).image(imagePath);
+
 
     }
 
@@ -132,5 +134,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public Movie getItem(int position){
         return mMoviesList.get(position);
     }
+
+
 }
 

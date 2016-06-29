@@ -44,6 +44,7 @@ public class MoviesFragment extends Fragment {
     private MovieAdapter moviesGridAdapter;
     private ArrayList<Movie> mMoviesList = new ArrayList<>();
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
+    private boolean mSortOrderChanged = false;
 
     /*To retain scroll state on screen rotate */
     private GridLayoutManager gridLayoutManager;
@@ -95,7 +96,22 @@ public class MoviesFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Called when the fragment is visible to the user and actively running.
+     * This is generally
+     * tied to {@link MainActivity#onResume() Activity.onResume} of the containing
+     * Activity's lifecycle.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(LOG_TAG, "OnResume Called");
+        if(mSortOrderChanged){
+            Log.i(LOG_TAG, "SortOrderChanged: refreshing Movies Listing");
+            refreshMoviesListing();
+            mSortOrderChanged = false;
+        }
+    }
 
     /**
      * Called to ask the fragment to save its current dynamic state, so it
@@ -162,7 +178,7 @@ public class MoviesFragment extends Fragment {
                 Log.i(LOG_TAG, "Preference Changed : " + key);
                 Log.i(LOG_TAG, "sort order : " + getString(R.string.pref_sort_order_key));
                 if(key.equals(getString(R.string.pref_sort_order_key))){
-                    refreshMoviesListing();
+                    mSortOrderChanged = true;
                 }
             }
         };
@@ -196,6 +212,7 @@ public class MoviesFragment extends Fragment {
         //To improve smooth scrolling
         moviesGrid.setHasFixedSize(true);
 
+        /*Add OnTouchListener to show movie detail activity on click of movie image */
         moviesGrid.addOnItemTouchListener(
                 new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
@@ -208,14 +225,15 @@ public class MoviesFragment extends Fragment {
                 })
         );
 
-
+        /*Add Scroll Listener to implement endless scrolling */
         moviesGrid.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 Log.i(LOG_TAG, "onLoadMore : page :" + page);
-                updateMovies(page+1);
+                updateMovies(page);
             }
         });
+
 
        return rootView;
     }
