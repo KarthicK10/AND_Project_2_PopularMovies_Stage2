@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -43,14 +42,11 @@ public class MoviesFragment extends Fragment {
     private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
     private MovieAdapter moviesGridAdapter;
     private ArrayList<Movie> mMoviesList = new ArrayList<>();
-    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
-    private boolean mSortOrderChanged = false;
-
-    /*To retain scroll state on screen rotate */
+    private String prevSortOrder;
     private GridLayoutManager gridLayoutManager;
-    Parcelable gridState;
-    public static final String GRID_STATE = "grid_state";
-    /*End To retain scroll state on screen rotate */
+
+    //Sort order Key for storing onSaveInstanceState
+    public static final String SORT_ORDER = "sort_order";
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -60,7 +56,6 @@ public class MoviesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreate: Called");
         super.onCreate(savedInstanceState);
-
 
         if(savedInstanceState == null || !savedInstanceState.containsKey(Movie.MOVIES_LIST_PARCEL_KEY) ){
 
@@ -75,10 +70,12 @@ public class MoviesFragment extends Fragment {
              */
             mMoviesList = savedInstanceState.getParcelableArrayList(Movie.MOVIES_LIST_PARCEL_KEY);
 
-            /*On Screen orientation change,
-             * retrieve the scroll position of the grid as it was in previous orientation */
-            gridState = savedInstanceState.getParcelable(GRID_STATE);
+            /*Check if sort order is changed*/
+            Log.i("previous Sort Order: " , savedInstanceState.getString(SORT_ORDER));
+            Log.i("current sort order : ", getSortOrderPath());
+            prevSortOrder = savedInstanceState.getString(SORT_ORDER);
         }
+
     }
 
     /**
@@ -90,10 +87,6 @@ public class MoviesFragment extends Fragment {
     public void onStart() {
         Log.i(LOG_TAG, "onStart: Called");
         super.onStart();
-        if(gridState != null){
-            /*Apply the grid state to retain the scroll postion as it was before screen rotation */
-            gridLayoutManager.onRestoreInstanceState(gridState);
-        }
     }
 
     /**
@@ -106,11 +99,12 @@ public class MoviesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.i(LOG_TAG, "OnResume Called");
-        if(mSortOrderChanged){
+        if(prevSortOrder != null && !prevSortOrder.equals(getSortOrderPath())){
             Log.i(LOG_TAG, "SortOrderChanged: refreshing Movies Listing");
             refreshMoviesListing();
-            mSortOrderChanged = false;
+            prevSortOrder = getSortOrderPath();
         }
+
     }
 
     /**
@@ -137,10 +131,9 @@ public class MoviesFragment extends Fragment {
         Log.i(LOG_TAG, "onSaveInstanceState: Called");
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(Movie.MOVIES_LIST_PARCEL_KEY, mMoviesList);
-        if(gridLayoutManager != null){
-            /*Save the grid state to for retaining the scroll position on screen rotation */
-            outState.putParcelable(GRID_STATE, gridLayoutManager.onSaveInstanceState());
-        }
+        prevSortOrder = getSortOrderPath();
+        Log.i("Saving sort order : ", getSortOrderPath());
+        outState.putString(SORT_ORDER, prevSortOrder);
     }
 
     /*Method to update the movies by calling theMovieDB API */
@@ -159,38 +152,9 @@ public class MoviesFragment extends Fragment {
         updateMovies(1);
     }
 
-    private void setPreferenceChangeListener(){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener(){
-            /**
-             * Called when a shared preference is changed, added, or removed. This
-             * may be called even if a preference is set to its existing value.
-             * <p>
-             * <p>This callback will be run on your main thread.
-             *
-             * @param sharedPreferences The {@link SharedPreferences} that received
-             *                          the change.
-             * @param key               The key of the preference that was changed, added, or
-             */
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                Log.i(LOG_TAG, "Preference Changed : " + key);
-                Log.i(LOG_TAG, "sort order : " + getString(R.string.pref_sort_order_key));
-                if(key.equals(getString(R.string.pref_sort_order_key))){
-                    mSortOrderChanged = true;
-                }
-            }
-        };
-
-        prefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        setPreferenceChangeListener();
 
         Log.i(LOG_TAG, "onCreateView: Called");
 
