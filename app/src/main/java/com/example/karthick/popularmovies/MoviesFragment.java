@@ -198,6 +198,9 @@ public class MoviesFragment extends Fragment {
             }
         });
 
+        /*Add decorator for spacing between grid items */
+        RecyclerView.ItemDecoration spacingDecoration = new SpacesItemDecoration(16);
+        moviesGrid.addItemDecoration(spacingDecoration);
 
        return rootView;
     }
