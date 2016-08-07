@@ -11,13 +11,13 @@
 <resources>
 
     <!-- Base Url and API key param name and value -->
-    <string name="movieDbBaseUrl">https://api.themoviedb.org/3</string>
+    <string name="movieDbBaseUrl">https://api.themoviedb.org</string>
     <string name="movieDbApiKey">Please add your API Key here</string>
     <string name="movieDbApiKeyParam">api_key</string>
 
     <!-- endpoints -->
-    <string name="mdb_path_popular">/movie/popular</string>
-    <string name="mdb_path_top_rated">/movie/top_rated</string>
+    <string name="mdb_path_popular">popular</string>
+    <string name="mdb_path_top_rated">top_rated</string>
     <!--End endpoints -->
 
     <!-- JSON object names in the JSON result from theMovieDB API -->

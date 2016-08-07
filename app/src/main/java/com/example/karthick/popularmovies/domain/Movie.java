@@ -3,6 +3,8 @@ package com.example.karthick.popularmovies.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 /**
@@ -13,12 +15,25 @@ public class Movie implements Parcelable{
     public static final String MOVIE_PARCEL_KEY = "MOVIE_PARCEL";
     public static final String MOVIES_LIST_PARCEL_KEY = "MOVIES_LIST_PARCEL";
 
+    @SerializedName("id")
     private int id;
+
+    @SerializedName("original_title")
     private String originalTitle;
+
+    @SerializedName("poster_path")
     private String posterPath;
+
+    @SerializedName("backdrop_path")
     private String backdropPath;
+
+    @SerializedName("overview")
     private String synapsis;
+
+    @SerializedName("vote_average")
     private double userRating;
+
+    @SerializedName("release_date")
     private Date releaseDate;
 
 
@@ -126,5 +141,33 @@ public class Movie implements Parcelable{
 
     public String getBackdropPath() {
         return backdropPath;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
+    public void setSynapsis(String synapsis) {
+        this.synapsis = synapsis;
+    }
+
+    public void setUserRating(double userRating) {
+        this.userRating = userRating;
+    }
+
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
     }
 }

@@ -2,8 +2,6 @@ package com.example.karthick.popularmovies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -15,22 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.karthick.popularmovies.domain.Movie;
+import com.example.karthick.popularmovies.domain.MovieDBResult;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +31,7 @@ import java.util.Date;
 public class MoviesFragment extends Fragment {
 
     private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
+    private static final String MOVIE_API_BASE_URL = "https://api.themoviedb.org";
     private MovieAdapter moviesGridAdapter;
     private ArrayList<Movie> mMoviesList = new ArrayList<>();
     private String prevSortOrder;
@@ -54,6 +46,7 @@ public class MoviesFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         Log.i(LOG_TAG, "onCreate: Called");
         super.onCreate(savedInstanceState);
 
@@ -139,8 +132,39 @@ public class MoviesFragment extends Fragment {
     /*Method to update the movies by calling theMovieDB API */
     private void updateMovies(int page){
         Log.i(LOG_TAG, "updateMovies: Called");
-        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-        fetchMoviesTask.execute(page);
+
+        String apiKey = getString(R.string.movieDbApiKey);
+
+        /*Get movie data from api using Retrofit */
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(MOVIE_API_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        MovieDBAPI movieDBAPI = retrofit.create(MovieDBAPI.class);
+        String sortOrder = getSortOrderPath();
+
+        Call<MovieDBResult> call = movieDBAPI.getmoviesList(sortOrder, apiKey, page);
+
+        call.enqueue(new Callback<MovieDBResult>() {
+            @Override
+            public void onResponse(Call<MovieDBResult> call, Response<MovieDBResult> response) {
+                int statusCode = response.code();
+                MovieDBResult movieDBResult = response.body();
+                Log.i(LOG_TAG, "Retrofit call Status code : " + statusCode);
+                ArrayList<Movie> moviesList = movieDBResult.getMoviesList();
+                if(moviesList != null && getActivity() != null && isAdded()){
+                    int currentSize = moviesGridAdapter.getItemCount();
+                    mMoviesList.addAll(moviesList);
+                    moviesGridAdapter.notifyItemRangeInserted(currentSize, moviesList.size()-1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieDBResult> call, Throwable t) {
+                Log.i(LOG_TAG, t.getMessage());
+            }
+        });
     }
 
     /*Refresh movies listing */
@@ -212,182 +236,5 @@ public class MoviesFragment extends Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         return prefs.getString(getString(R.string.pref_sort_order_key), getString(R.string.pref_sort_order_default));
     }
-
-    /*The AsyncTask to fetch the movies from theMovieDB API */
-    private class FetchMoviesTask extends AsyncTask<Integer, Void, ArrayList<Movie>>{
-
-        private final String LOG_TAG = AsyncTask.class.getSimpleName();
-
-        /**
-         * Override this method to perform a computation on a background thread. The
-         * specified parameters are the parameters passed to {@link #execute}
-         * by the caller of this task.
-         * <p/>
-         * This method can call {@link #publishProgress} to publish updates
-         * on the UI thread.
-         *
-         * @param params The parameters of the task.
-         * @return A result, defined by the subclass of this task.
-         * @see #onPreExecute()
-         * @see #onPostExecute
-         * @see #publishProgress
-         */
-        @Override
-        protected ArrayList<Movie> doInBackground(Integer... params) {
-
-            // These two need to be declared outside the try/catch
-            // so that they can be closed in the finally block.
-            Log.i(LOG_TAG, "doInBackground: called");
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-
-            // Will contain the raw JSON response as a string.
-            String moviesJsonStr = null;
-            final String apiKey = getString(R.string.movieDbApiKey);
-            Integer pageNumber = params[0];
-            String page = pageNumber.toString();
-
-            try{
-                //Construct the URL for fetching the
-                final String MOVIE_API_BASE_URL = getString(R.string.movieDbBaseUrl);
-                final String API_KEY_PARAM = getString(R.string.movieDbApiKeyParam);
-
-                Uri moviesApiUri = Uri.parse(MOVIE_API_BASE_URL + getSortOrderPath()).buildUpon()
-                                    .appendQueryParameter(API_KEY_PARAM, apiKey)
-                                    .appendQueryParameter("page", page)
-                                    .build();
-                URL url = new URL(moviesApiUri.toString());
-
-                Log.i(LOG_TAG, "movies API Uri :" + moviesApiUri.toString());
-
-                //Create the request to the movie db and open the connection
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                //Read the input stream into a string
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if(inputStream == null){
-                    //Nothing to do
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
-                    return null;
-                }
-                moviesJsonStr = buffer.toString();
-                Log.i(LOG_TAG, moviesJsonStr);
-
-            } catch (IOException e){
-                Log.e(LOG_TAG, "Error", e);
-                return  null;
-            }
-            finally {
-                if(urlConnection != null){
-                    urlConnection.disconnect();
-                }
-                if(reader != null){
-                    try{
-                        reader.close();
-                    }catch (final IOException e){
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
-            }
-
-            try{
-                return getMoviesFromJSON(moviesJsonStr);
-            }
-            catch(JSONException e){
-                Log.e(LOG_TAG, e.getMessage(), e);
-                e.printStackTrace();
-            }
-
-            return null;
-
-        }
-
-        /*Function to get the movies data from the JSON string */
-        private ArrayList<Movie> getMoviesFromJSON (String moviesJsonStr) throws JSONException{
-
-            ArrayList<Movie> moviesArrayList = new ArrayList<>(); // The result list of movies to be returned.
-
-            //These are the names of the JSON object that needs to be extracted
-            final String MDB_RESULTS = getString(R.string.mdb_json_results);
-            final String MDB_ID = getString(R.string.mdb_json_id);
-            final String MDB_ORIGINAL_TITLE = getString(R.string.mdb_json_original_title);
-            final String MDB_POSTER_PATH = getString(R.string.mdb_json_poster_path);
-            final String MDB_BACKDROP_PATH = getString(R.string.mdb_json_backdrop_path);
-            final String MDB_OVERVIEW = getString(R.string.mdb_json_overview);
-            final String MDB_RELEASE_DATE = getString(R.string.mdb_json_release_date);
-            final String MDB_VOTE_AVERAGE = getString(R.string.mdb_json_vote_average);
-            final String MDB_RELEASE_DATE_FORMAT = getString(R.string.mdb_json_release_date_format);
-
-            JSONObject moviesJson = new JSONObject(moviesJsonStr);
-            JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);
-
-            try{
-                for (int i = 0; i <moviesArray.length() ; i++) {
-
-                    //Get the JSON object representing the movie
-                    JSONObject movie = moviesArray.getJSONObject(i);
-
-                    //Get the movie attributes
-                    int movieId = movie.getInt(MDB_ID);
-                    String originalTitle = movie.getString(MDB_ORIGINAL_TITLE);
-                    String posterPath = movie.getString(MDB_POSTER_PATH);
-                    String backdropPath = movie.getString(MDB_BACKDROP_PATH);
-                    String synapsis = movie.getString(MDB_OVERVIEW);
-                    double userRating = movie.getDouble(MDB_VOTE_AVERAGE);
-                    DateFormat format = new SimpleDateFormat(MDB_RELEASE_DATE_FORMAT);
-                    Date releaseDate = format.parse(movie.getString(MDB_RELEASE_DATE));
-
-                    //Add the movie to the movies array list result set.
-                    moviesArrayList.add(new Movie(movieId, originalTitle, posterPath, backdropPath, synapsis, userRating, releaseDate));
-                }
-            }
-            catch (ParseException e){
-                Log.e(LOG_TAG, e.getMessage(), e);
-                e.printStackTrace();
-            }
-
-            return  moviesArrayList;
-        }
-
-        /**
-         * <p>Runs on the UI thread after {@link #doInBackground}. The
-         * specified result is the value returned by {@link #doInBackground}.</p>
-         * <p/>
-         * <p>This method won't be invoked if the task was cancelled.</p>
-         *
-         * @param movies The result of the operation computed by {@link #doInBackground}.
-         * @see #onPreExecute
-         * @see #doInBackground
-         * @see #onCancelled(Object)
-         */
-        @Override
-        protected void onPostExecute(ArrayList<Movie> movies) {
-            Log.i(LOG_TAG, "onPostExecute: Called");
-            if(movies != null){
-                int currentSize = moviesGridAdapter.getItemCount();
-                Log.i(LOG_TAG, "onPostExecute: currentSize : " + currentSize);
-                mMoviesList.addAll(movies);
-                moviesGridAdapter.notifyItemRangeInserted(currentSize, movies.size()-1);
-                Log.i(LOG_TAG, "onPostExecute: notifiedItemRangeInserted");
-            }
-        }
-    }
-
-
 
 }
