@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.karthick.popularmovies.domain.Movie;
+import com.example.karthick.popularmovies.data.Movie;
 
 /*
 * This Activity is to show the details of a movie in different sections(fragments)

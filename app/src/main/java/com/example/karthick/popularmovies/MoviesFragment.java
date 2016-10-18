@@ -12,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.karthick.popularmovies.domain.Movie;
-import com.example.karthick.popularmovies.domain.MovieDBResult;
+import com.example.karthick.popularmovies.data.Movie;
+import com.example.karthick.popularmovies.data.MovieDBResult;
 
 import java.util.ArrayList;
 

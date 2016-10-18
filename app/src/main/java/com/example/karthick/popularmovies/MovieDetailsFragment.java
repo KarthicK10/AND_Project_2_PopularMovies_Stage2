@@ -11,7 +11,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.example.karthick.popularmovies.domain.Movie;
+import com.example.karthick.popularmovies.data.Movie;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

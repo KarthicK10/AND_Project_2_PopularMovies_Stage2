@@ -1,6 +1,6 @@
 package com.example.karthick.popularmovies;
 
-import com.example.karthick.popularmovies.domain.MovieDBResult;
+import com.example.karthick.popularmovies.data.MovieDBResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

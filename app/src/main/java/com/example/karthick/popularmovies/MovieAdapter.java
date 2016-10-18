@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.androidquery.AQuery;
-import com.example.karthick.popularmovies.domain.Movie;
+import com.example.karthick.popularmovies.data.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
