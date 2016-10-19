@@ -21,7 +21,7 @@ public class MovieContract {
 
         //Start - Column names
 
-        //movie id, stored as int
+        //movie id, stored as String
         public static final String COLUMN_MOVIE_ID = "movie_id";
 
         //title, stored as String
