@@ -22,14 +22,16 @@
     <string name="pref_sort_order_key" translatable="false">sortOrder</string>
 
     <!-- Default sort order -->
-    <string name="pref_sort_order_default" translatable="false">popular</string>
+    <string name="pref_sort_order_default" translatable="false">@string/mdb_path_popular</string>
 
     <!-- Entries for Sort Order Settings-->
     <string-array name="sort_order_entries">
         <item>POPULAR</item>
         <item>TOP RATED</item>
+        <item>FAVORITES</item>
     </string-array>
 
+    <string name="sort_order_favorite_value">favorites</string>
 
     <!--
             Entry values for Sort Order Settings
@@ -45,6 +47,7 @@
     <string-array name="sort_order_entry_values">
         <item>@string/mdb_path_popular</item>
         <item>@string/mdb_path_top_rated</item>
+        <item>@string/sort_order_favorite_value</item>
     </string-array>
 
 

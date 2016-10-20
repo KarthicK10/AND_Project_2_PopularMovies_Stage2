@@ -178,7 +178,6 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
      */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -186,38 +185,49 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     private void updateMovies(int page){
         Log.i(LOG_TAG, "updateMovies: Called");
 
-        String apiKey = getString(R.string.movieDbApiKey);
-
-        /*Get movie data from api using Retrofit */
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MOVIE_API_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        MovieDBAPI movieDBAPI = retrofit.create(MovieDBAPI.class);
         String sortOrder = getSortOrderPath();
 
-        Call<MovieDBResult> call = movieDBAPI.getmoviesList(sortOrder, apiKey, page);
+        if(sortOrder.equals(getString(R.string.sort_order_favorite_value))){
+            // get favorite movies from local db using loader and content provider
+            getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        }
+        else{
+            //get list of movies list over the internet from the API using Retrofit
+            String apiKey = getString(R.string.movieDbApiKey);
 
-        call.enqueue(new Callback<MovieDBResult>() {
-            @Override
-            public void onResponse(Call<MovieDBResult> call, Response<MovieDBResult> response) {
-                int statusCode = response.code();
-                MovieDBResult movieDBResult = response.body();
-                Log.i(LOG_TAG, "Retrofit call Status code : " + statusCode);
-                ArrayList<Movie> moviesList = movieDBResult.getMoviesList();
-                if(moviesList != null && getActivity() != null && isAdded()){
-                    int currentSize = moviesGridAdapter.getItemCount();
-                    mMoviesList.addAll(moviesList);
-                    moviesGridAdapter.notifyItemRangeInserted(currentSize, moviesList.size()-1);
+        /*Get movie data from api using Retrofit */
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(MOVIE_API_BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            MovieDBAPI movieDBAPI = retrofit.create(MovieDBAPI.class);
+
+
+            Call<MovieDBResult> call = movieDBAPI.getmoviesList(sortOrder, apiKey, page);
+
+            call.enqueue(new Callback<MovieDBResult>() {
+                @Override
+                public void onResponse(Call<MovieDBResult> call, Response<MovieDBResult> response) {
+                    int statusCode = response.code();
+                    MovieDBResult movieDBResult = response.body();
+                    Log.i(LOG_TAG, "Retrofit call Status code : " + statusCode);
+                    ArrayList<Movie> moviesList = movieDBResult.getMoviesList();
+                    if(moviesList != null && getActivity() != null && isAdded()){
+                        int currentSize = moviesGridAdapter.getItemCount();
+                        mMoviesList.addAll(moviesList);
+                        moviesGridAdapter.notifyItemRangeInserted(currentSize, moviesList.size()-1);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<MovieDBResult> call, Throwable t) {
-                Log.i(LOG_TAG, t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<MovieDBResult> call, Throwable t) {
+                    Log.i(LOG_TAG, t.getMessage());
+                }
+            });
+        }
+
+
     }
 
     /*Refresh movies listing */
