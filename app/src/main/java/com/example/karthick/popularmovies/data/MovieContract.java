@@ -1,5 +1,7 @@
 package com.example.karthick.popularmovies.data;
 
+import android.content.ContentResolver;
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -11,11 +13,18 @@ import android.provider.BaseColumns;
 
 public class MovieContract {
 
-    //Path to access the favorites table
+    //Define the Content Authority to be used in Content URI
+    public static final String CONTENT_AUTHORIY = "com.example.karthick.popularmovies";
+
+    //Define the base URI path
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORIY);
+
+    //Define path for segment for favorite data
     public static final String PATH_FAVORITE = "favorite";
 
     /*Inner class to define the column names of the favorite table*/
     public static final class FavoriteEntry implements BaseColumns{
+
         //Table name
         public static final String TABLE_NAME = "favorite";
 
@@ -44,6 +53,20 @@ public class MovieContract {
 
         //End - Column names
 
+        //Content Uri
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(PATH_FAVORITE).build();
+
+        //Cursor types
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORIY + "/" + PATH_FAVORITE;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORIY + "/" + PATH_FAVORITE;
+
+        //Function to build the favorites URI to return all favorite movies data
+        public static Uri buildFavoriteUri(){
+            return CONTENT_URI;
+        }
     }
 
 }
