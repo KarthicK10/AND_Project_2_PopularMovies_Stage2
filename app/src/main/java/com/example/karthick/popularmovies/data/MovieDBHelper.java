@@ -51,7 +51,7 @@ public class MovieDBHelper extends SQLiteOpenHelper {
         //Create table statement for the favorites table
         final String SQL_CREATE_FAVORTIE_TABLE = "CREATE TABLE " + MovieContract.FavoriteEntry.TABLE_NAME + " (" +
                 MovieContract.FavoriteEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                MovieContract.FavoriteEntry.COLUMN_MOVIE_ID + " TEXT NOT NULL UNIQUE," +
+                MovieContract.FavoriteEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE," +
                 MovieContract.FavoriteEntry.COLUMN_ORIGINAL_TITLE + " TEXT NOT NULL," +
                 MovieContract.FavoriteEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL," +
                 MovieContract.FavoriteEntry.COLUMN_BACKDROP_PATH + " TEXT NOT NULL," +
