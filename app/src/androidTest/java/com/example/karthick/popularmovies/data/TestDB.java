@@ -1,5 +1,6 @@
 package com.example.karthick.popularmovies.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
@@ -79,4 +80,62 @@ public class TestDB extends AndroidTestCase {
         //close db
         db.close();
     }
+
+    public void testFavoriteTable(){
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        long favoirteRowId = -1L;
+        try{
+            //Get writable database
+            db = new MovieDBHelper(this.mContext).getWritableDatabase();
+
+            //check if db is open
+            assertTrue("Error: DB not open", db.isOpen());
+
+            //Create content values for insert
+            ContentValues favoriteValues = TestUtilities.createFavoriteValues();
+
+            //Insert content values
+            favoirteRowId = db.insert(
+                    MovieContract.FavoriteEntry.TABLE_NAME,
+                    null,
+                    favoriteValues
+            );
+
+            //Check if insert was successful
+            assertTrue("Error: Insert failed", favoirteRowId != -1);
+
+            //Query db and get the inserted row
+            c = db.query(
+                    MovieContract.FavoriteEntry.TABLE_NAME,
+                    null, // all columns
+                    MovieContract.FavoriteEntry._ID + " = ?",
+                    new String[] {new Long(favoirteRowId).toString()},
+                    null,
+                    null,
+                    null
+                    );
+
+            //Check if record returned
+            assertTrue("Error: Inserted record not returned", c.moveToFirst());
+
+            //Check if record values match what was inserted
+            TestUtilities.validateCurrentRecord("Error: Favorite query validation falied.", c, favoriteValues);
+
+        }
+        catch (Exception e){
+            fail("Error : " + e.getMessage());
+        }
+        finally {
+            //Finally close the cursor and the database
+            if(c != null){
+                c.close();
+            }
+            if(db != null){
+                db.close();
+            }
+        }
+    }
+
+
 }
