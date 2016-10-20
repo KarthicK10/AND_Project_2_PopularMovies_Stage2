@@ -25,7 +25,7 @@ public class TestUtilities extends AndroidTestCase {
         testValues.put(MovieContract.FavoriteEntry.COLUMN_POSTER_PATH, "/z6BP8yLwck8mN9dtdYKkZ4XGa3D.jpg");
         testValues.put(MovieContract.FavoriteEntry.COLUMN_BACKDROP_PATH, "/T3LrH6bnV74llVbFpQsCBrGaU9.jpg");
         testValues.put(MovieContract.FavoriteEntry.COLUMN_VOTE_AVERAGE, 4.57);
-        testValues.put(MovieContract.FavoriteEntry.COLUMN_RELEASE_DATE, 1203201239);
+        testValues.put(MovieContract.FavoriteEntry.COLUMN_RELEASE_DATE, "2016-09-14");
 
         return testValues;
     }
