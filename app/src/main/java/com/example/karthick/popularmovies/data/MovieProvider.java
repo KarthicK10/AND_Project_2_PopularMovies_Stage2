@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -34,6 +35,8 @@ public class MovieProvider extends ContentProvider {
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
+    private MovieDBHelper mMovieDBHelper;
+
     /**
      * Implement this to initialize your content provider on startup.
      * This method is called for all registered content providers on the
@@ -61,7 +64,8 @@ public class MovieProvider extends ContentProvider {
      */
     @Override
     public boolean onCreate() {
-        return false;
+        mMovieDBHelper = new MovieDBHelper(getContext());
+        return true;
     }
 
     /**
@@ -122,7 +126,24 @@ public class MovieProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+        Cursor retCursor;
+        switch(uriMatcher.match(uri)){
+            case FAVORITE:
+                retCursor = mMovieDBHelper.getReadableDatabase().query(
+                        MovieContract.FavoriteEntry.TABLE_NAME,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return retCursor;
     }
 
 
@@ -142,6 +163,18 @@ public class MovieProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        Uri returnUri;
+        final SQLiteDatabase db = mMovieDBHelper.getWritableDatabase();
+        final int match = uriMatcher.match(uri);
+
+        switch (match){
+            case FAVORITE:
+                long _id = db.insert(MovieContract.FavoriteEntry.TABLE_NAME, null, values);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
         return null;
     }
 
@@ -191,7 +224,7 @@ public class MovieProvider extends ContentProvider {
      */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+       return 0;
     }
 
     /**
@@ -215,6 +248,11 @@ public class MovieProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
-        return null;
+        switch (uriMatcher.match(uri)){
+            case FAVORITE:
+                return MovieContract.FavoriteEntry.CONTENT_TYPE;
+            default:
+                throw new UnsupportedOperationException("Unknown Uri: " + uri);
+        }
     }
 }
