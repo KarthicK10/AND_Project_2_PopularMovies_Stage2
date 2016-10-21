@@ -187,7 +187,9 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
         String sortOrder = getSortOrderPath();
 
-        if(sortOrder.equals(getString(R.string.sort_order_favorite_value))){
+        Log.i(LOG_TAG, sortOrder);
+
+        if(sortOrder != null && sortOrder.equals(getString(R.string.sort_order_favorite_value))){
             // get favorite movies from local db using loader and content provider
             getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         }
@@ -359,22 +361,28 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        ArrayList<Movie> moviesList = new ArrayList<>();
-        if(data.moveToFirst()){
-            do{
-                moviesList.add(new Movie(
-                        data.getInt(COL_MOVIE_ID),
-                        data.getString(COL_ORIGINAL_TITLE),
-                        data.getString(COL_POSTER_PATH),
-                        data.getString(COL_BACKDROP_PATH),
-                        data.getString(COL_SYNAPSIS),
-                        data.getDouble(COL_VOTE_AVERAGE),
-                        new Date() //TODO get actual release date
-                ));
-            }while(data.moveToNext());
-            mMoviesList.clear();
-            mMoviesList.addAll(moviesList);
-            moviesGridAdapter.notifyDataSetChanged();
+        Log.i(LOG_TAG, "onLoadFinished called");
+        String sortOrder = getSortOrderPath();
+        Log.i(LOG_TAG, sortOrder);
+        //To avoid the loader refreshing the data on screen when sort order is not favorites
+        if(sortOrder != null && sortOrder.equals(getString(R.string.sort_order_favorite_value))){
+            ArrayList<Movie> moviesList = new ArrayList<>();
+            if(data != null && data.moveToFirst()){
+                do{
+                    moviesList.add(new Movie(
+                            data.getInt(COL_MOVIE_ID),
+                            data.getString(COL_ORIGINAL_TITLE),
+                            data.getString(COL_POSTER_PATH),
+                            data.getString(COL_BACKDROP_PATH),
+                            data.getString(COL_SYNAPSIS),
+                            data.getDouble(COL_VOTE_AVERAGE),
+                            new Date() //TODO get actual release date
+                    ));
+                }while(data.moveToNext());
+                mMoviesList.clear();
+                mMoviesList.addAll(moviesList);
+                moviesGridAdapter.notifyDataSetChanged();
+            }
         }
     }
 
