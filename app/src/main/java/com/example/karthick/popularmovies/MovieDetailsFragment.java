@@ -98,6 +98,9 @@ public class MovieDetailsFragment extends Fragment {
             /*Show User Rating*/ //TODO - Should we even show it in number? as we are anyway showing in stars? Does the user care?
             TextView userRatingText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_user_rating);
             userRatingText.setText(String.format("%.2f", movie.getUserRating() ) + getString(R.string.movie_detail_rating_suffix));
+            /*Show the fav icon*/
+            ImageView favIconImage = (ImageView) rootView.findViewById(R.id.fav_icon);
+            favIconImage.setImageResource(R.mipmap.ic_add_fav);
 
         }
         return rootView;
