@@ -4,7 +4,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 
 /**
  * Created by KarthicK on 6/20/2016.
@@ -61,7 +60,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // but first we check if we are waiting for the previous load to finish.
    @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-       Log.i("OnScrolled : ", "Called");
        int lastVisibleItemPosition = 0;
        int totalItemCount = mLayoutManager.getItemCount();
 
@@ -77,15 +75,10 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
        // If the total item count is zero and the previous isn't, assume the
        // list is invalidated and should be reset back to initial state
-       Log.i("totalItemCount : " , String.valueOf(totalItemCount));
-       Log.i("prevTotalItemCount : " , String.valueOf(previousTotalItemCount));
-       Log.i("currentPage : " , String.valueOf(currentPage));
-       if (totalItemCount < previousTotalItemCount) {
-           Log.i("", "totalItemCount < prevTotalItemCount");
+        if (totalItemCount < previousTotalItemCount) {
            this.currentPage = this.startingPageIndex;
            this.previousTotalItemCount = totalItemCount;
            if (totalItemCount == 0) {
-               Log.i("", "totalItemCount = 0");
                this.loading = true;
            }
        }
