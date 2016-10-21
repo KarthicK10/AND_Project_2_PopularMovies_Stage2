@@ -14,7 +14,7 @@ import android.util.Log;
 public class MovieDBHelper extends SQLiteOpenHelper {
 
     //Database Version. Important - if you change the database schema, you must increment the version number.
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
 
     //Datatbase name
     static final String DATABASE_NAME = "movies.db";
@@ -57,7 +57,7 @@ public class MovieDBHelper extends SQLiteOpenHelper {
                 MovieContract.FavoriteEntry.COLUMN_BACKDROP_PATH + " TEXT NOT NULL," +
                 MovieContract.FavoriteEntry.COLUMN_SYNAPSIS + " TEXT NOT NULL," +
                 MovieContract.FavoriteEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL," +
-                MovieContract.FavoriteEntry.COLUMN_RELEASE_DATE + " TEXT);";
+                MovieContract.FavoriteEntry.COLUMN_RELEASE_DATE + " REAL NOT NULL);";
 
         Log.i(LOG_TAG, SQL_CREATE_FAVORTIE_TABLE);
 
