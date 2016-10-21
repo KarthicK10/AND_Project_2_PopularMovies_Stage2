@@ -36,19 +36,19 @@ public class MovieContract {
         //title, stored as String
         public static final String COLUMN_ORIGINAL_TITLE = "original_title";
 
-        //title, stored as String
+        //poster image path, stored as String
         public static final String COLUMN_POSTER_PATH = "poster_path";
 
-        //title, stored as String
+        //backdrop image path, stored as String
         public static final String COLUMN_BACKDROP_PATH = "backdrop_path";
 
-        //title, stored as String
+        //movie overview, stored as String
         public static final String COLUMN_SYNAPSIS = "synapsis";
 
-        //title, stored as String
+        //user rating, stored as Real
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
 
-        //title, stored as String
+        //release date, stored as Long
         public static final String COLUMN_RELEASE_DATE = "release_date";
 
         //End - Column names
