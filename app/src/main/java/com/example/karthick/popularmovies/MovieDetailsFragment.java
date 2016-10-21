@@ -1,5 +1,6 @@
 package com.example.karthick.popularmovies;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.example.karthick.popularmovies.data.Movie;
+import com.example.karthick.popularmovies.data.MovieContract;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -91,7 +93,7 @@ public class MovieDetailsFragment extends Fragment {
             /*Show Release Date */
             TextView releaseDateText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_release_date);
             DateFormat dateFormat = new SimpleDateFormat(getString(R.string.movie_detail_release_date_format));
-            releaseDateText.setText(dateFormat.format(movie.getReleaseDate()));
+            releaseDateText.setText( dateFormat.format( movie.getReleaseDate() ) );
             /*Show Rating Bar */
             RatingBar ratingBar = (RatingBar) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_ratingbar);
             ratingBar.setRating((float)movie.getUserRating()/2);
@@ -101,6 +103,26 @@ public class MovieDetailsFragment extends Fragment {
             /*Show the fav icon*/
             ImageView favIconImage = (ImageView) rootView.findViewById(R.id.fav_icon);
             favIconImage.setImageResource(R.mipmap.ic_add_fav);
+            favIconImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Toggle Fav Icon
+                    ImageView iv = (ImageView) v;
+                    iv.setImageResource(R.mipmap.ic_remove_fav);
+
+                    //Create Content Values
+                    ContentValues favoriteValues = new ContentValues();
+                    favoriteValues.put(MovieContract.FavoriteEntry.COLUMN_MOVIE_ID, movie.getId());
+                    favoriteValues.put(MovieContract.FavoriteEntry.COLUMN_ORIGINAL_TITLE, movie.getOriginalTitle());
+                    favoriteValues.put(MovieContract.FavoriteEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
+                    favoriteValues.put(MovieContract.FavoriteEntry.COLUMN_BACKDROP_PATH, movie.getBackdropPath());
+                    favoriteValues.put(MovieContract.FavoriteEntry.COLUMN_SYNAPSIS, movie.getSynapsis());
+                    favoriteValues.put(MovieContract.FavoriteEntry.COLUMN_VOTE_AVERAGE, movie.getUserRating());
+                    favoriteValues.put(MovieContract.FavoriteEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate().getTime());
+
+                    getContext().getContentResolver().insert(MovieContract.FavoriteEntry.buildFavoriteUri(), favoriteValues);
+                }
+            });
 
         }
         return rootView;
