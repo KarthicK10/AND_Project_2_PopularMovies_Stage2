@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.example.karthick.popularmovies.data.Movie;
@@ -217,6 +218,8 @@ public class MovieDetailsFragment extends Fragment implements LoaderManager.Load
                             MovieContract.FavoriteEntry.COLUMN_MOVIE_ID + " = ?",
                             new String[]{ new Integer(movie.getId()).toString() }
                             );
+                    Toast toast = Toast.makeText(getContext(), "Removed from Favorites", Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             });
         }
@@ -240,6 +243,8 @@ public class MovieDetailsFragment extends Fragment implements LoaderManager.Load
                     favoriteValues.put(MovieContract.FavoriteEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate().getTime());
 
                     getContext().getContentResolver().insert(MovieContract.FavoriteEntry.buildFavoriteUri(), favoriteValues);
+                    Toast toast = Toast.makeText(getContext(), "Added to Favorites", Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             });
         }
