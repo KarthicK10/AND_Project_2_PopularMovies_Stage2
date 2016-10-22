@@ -264,6 +264,8 @@ public class MovieProvider extends ContentProvider {
         switch (uriMatcher.match(uri)){
             case FAVORITE:
                 return MovieContract.FavoriteEntry.CONTENT_TYPE;
+            case FAVORITE_MOVIE:
+                return MovieContract.FavoriteEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown Uri: " + uri);
         }
