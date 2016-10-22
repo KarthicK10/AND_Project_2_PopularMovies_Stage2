@@ -63,9 +63,14 @@ public class MovieContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORIY + "/" + PATH_FAVORITE;
 
-        //Function to build the favorites URI to return all favorite movies data
+        //Method to build the favorites URI to return all favorite movies data
         public static Uri buildFavoriteUri(){
             return CONTENT_URI;
+        }
+
+        //Method to get a specific movie from the favorite movies data
+        public static Uri buildFavoriteMovieUri(int movieId){
+            return CONTENT_URI.buildUpon().appendPath(new Integer(movieId).toString()).build();
         }
     }
 

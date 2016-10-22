@@ -20,6 +20,7 @@ public class MovieProvider extends ContentProvider {
 
     //Codes for URIs for ease of use
     static final int FAVORITE = 100;
+    static final int FAVORITE_MOVIE = 200;
 
     /**URI matcher function
      *to map the incoming URI requests
@@ -30,6 +31,7 @@ public class MovieProvider extends ContentProvider {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH); // to ensure root is not exposed
         final String authority = MovieContract.CONTENT_AUTHORIY;
         uriMatcher.addURI(authority, MovieContract.PATH_FAVORITE, FAVORITE);
+        uriMatcher.addURI(authority, MovieContract.PATH_FAVORITE + "/#", FAVORITE_MOVIE);
         return  uriMatcher;
     }
 
@@ -137,6 +139,17 @@ public class MovieProvider extends ContentProvider {
                         null,
                         null,
                         null
+                );
+                break;
+            case FAVORITE_MOVIE:
+                retCursor = mMovieDBHelper.getReadableDatabase().query(
+                            MovieContract.FavoriteEntry.TABLE_NAME,
+                            projection,
+                            selection,
+                            selectionArgs,
+                            null,
+                            null,
+                            null
                 );
                 break;
             default:
