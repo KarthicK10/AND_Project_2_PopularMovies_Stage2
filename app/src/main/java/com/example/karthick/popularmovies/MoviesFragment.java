@@ -50,6 +50,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     //Sort order Key for storing onSaveInstanceState
     public static final String SORT_ORDER = "sort_order";
 
+    private boolean mSavedInstanceAvailable = true;
+
     //Loader ID
     private static final int MOVIE_LOADER = 1;
 
@@ -89,7 +91,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             /*
              * This is the first creation and therefore state cannot be retrieved from savedInstanceState
              */
-            refreshMoviesListing();
+            mSavedInstanceAvailable = false; // To indicate onStart to refresh the movies list from api
+            //refreshMoviesListing();
         }
         else{
             /* On Screen orientation change,
@@ -113,6 +116,9 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onStart() {
         Log.i(LOG_TAG, "onStart: Called");
+        if(!mSavedInstanceAvailable){
+            refreshMoviesListing();
+        }
         super.onStart();
     }
 
@@ -211,7 +217,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                     MovieDBResult movieDBResult = response.body();
                     Log.i(LOG_TAG, "Retrofit call Status code : " + statusCode);
                     ArrayList<Movie> moviesList = movieDBResult.getMoviesList();
-                    if(moviesList != null && getActivity() != null && isAdded()){
+                    if(moviesList != null && getActivity() != null && isAdded() && moviesGridAdapter != null){
                         int currentSize = moviesGridAdapter.getItemCount();
                         mMoviesList.addAll(moviesList);
                         moviesGridAdapter.notifyItemRangeInserted(currentSize, moviesList.size()-1);
@@ -230,7 +236,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     * Refreshes from local DB or API call based on current sort order preference
     * */
     private void refreshMoviesListing(){
-        if(moviesGridAdapter != null){
+        if(moviesGridAdapter != null && mMoviesList != null){
             mMoviesList.clear();
             moviesGridAdapter.notifyDataSetChanged();
         }
