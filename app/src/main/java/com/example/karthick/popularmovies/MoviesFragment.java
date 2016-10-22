@@ -185,8 +185,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
 
     /*Method to update the movies by calling theMovieDB API */
-    private void updateMovies(int page){
-        Log.i(LOG_TAG, "updateMovies: Called");
+    private void fetchMoviesFromAPI(int page){
+        Log.i(LOG_TAG, "fetchMoviesFromAPI: Called");
 
         String sortOrder = getSortOrderPath();
         Log.i(LOG_TAG, sortOrder);
@@ -226,7 +226,9 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         }
     }
 
-    /*Refresh movies listing */
+    /*Refresh movies listing
+    * Refreshes from local DB or API call based on current sort order preference
+    * */
     private void refreshMoviesListing(){
         if(moviesGridAdapter != null){
             mMoviesList.clear();
@@ -237,11 +239,13 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         Log.i(LOG_TAG, sortOrder);
 
         if(sortOrder != null){
-            if(!sortOrder.equals(getString(R.string.sort_order_favorite_value))){
-                updateMovies(1);
+            if(sortOrder.equals(getString(R.string.sort_order_favorite_value))){
+                //Get favorite movies from local DB
+                getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
             }
             else{
-                getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+                //Get movies from theMovieDB API
+                fetchMoviesFromAPI(1);
             }
         }
     }
@@ -288,7 +292,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 Log.i(LOG_TAG, "onLoadMore : page :" + page);
-                updateMovies(page);
+                fetchMoviesFromAPI(page);
             }
         });
 
