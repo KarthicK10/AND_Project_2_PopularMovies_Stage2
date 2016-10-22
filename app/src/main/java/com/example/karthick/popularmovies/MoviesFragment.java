@@ -178,23 +178,20 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
      */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        // get favorite movies from local db using loader and content provider
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
+
 
     /*Method to update the movies by calling theMovieDB API */
     private void updateMovies(int page){
         Log.i(LOG_TAG, "updateMovies: Called");
 
         String sortOrder = getSortOrderPath();
-
         Log.i(LOG_TAG, sortOrder);
 
-        if(sortOrder != null && sortOrder.equals(getString(R.string.sort_order_favorite_value))){
-            // get favorite movies from local db using loader and content provider
-            getLoaderManager().initLoader(MOVIE_LOADER, null, this);
-        }
-        else{
-            //get list of movies list over the internet from the API using Retrofit
+        if(sortOrder != null && !sortOrder.equals(getString(R.string.sort_order_favorite_value))){
             String apiKey = getString(R.string.movieDbApiKey);
 
         /*Get movie data from api using Retrofit */
@@ -204,7 +201,6 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                     .build();
 
             MovieDBAPI movieDBAPI = retrofit.create(MovieDBAPI.class);
-
 
             Call<MovieDBResult> call = movieDBAPI.getmoviesList(sortOrder, apiKey, page);
 
@@ -228,8 +224,6 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 }
             });
         }
-
-
     }
 
     /*Refresh movies listing */
@@ -238,7 +232,18 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             mMoviesList.clear();
             moviesGridAdapter.notifyDataSetChanged();
         }
-        updateMovies(1);
+
+        String sortOrder = getSortOrderPath();
+        Log.i(LOG_TAG, sortOrder);
+
+        if(sortOrder != null){
+            if(!sortOrder.equals(getString(R.string.sort_order_favorite_value))){
+                updateMovies(1);
+            }
+            else{
+                getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+            }
+        }
     }
 
     @Override
@@ -382,8 +387,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 mMoviesList.clear();
                 mMoviesList.addAll(moviesList);
                 moviesGridAdapter.notifyDataSetChanged();
+                }
             }
-        }
     }
 
     /**
@@ -395,7 +400,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mMoviesList.clear();
-        moviesGridAdapter.notifyDataSetChanged();
+        Log.d(LOG_TAG, "onLoaderReset Called");
+       // mMoviesList.clear();
+        //moviesGridAdapter.notifyDataSetChanged();
     }
 }
