@@ -46,7 +46,7 @@ public class MovieContract {
         public static final String COLUMN_SYNAPSIS = "synapsis";
 
         //user rating, stored as Real
-        public static final String COLUMN_VOTE_AVERAGE = "vote_average";
+        public static final String COLUMN_VOTE_AVERAGE = "vote_average"; //TODO - Vote average might change. Why store it?
 
         //release date, stored as Long
         public static final String COLUMN_RELEASE_DATE = "release_date";
