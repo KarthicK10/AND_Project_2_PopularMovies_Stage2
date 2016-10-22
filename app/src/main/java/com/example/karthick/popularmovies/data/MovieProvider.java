@@ -237,7 +237,23 @@ public class MovieProvider extends ContentProvider {
      */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-       return 0;
+        int rowsDeleted = 0;
+        final SQLiteDatabase db = new MovieDBHelper(getContext()).getWritableDatabase();
+        switch (uriMatcher.match(uri)){
+            case FAVORITE_MOVIE:
+                rowsDeleted = db.delete(
+                        MovieContract.FavoriteEntry.TABLE_NAME,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            default:
+                throw new UnsupportedOperationException("Delete URI not found");
+        }
+        if(rowsDeleted > 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsDeleted;
     }
 
     /**

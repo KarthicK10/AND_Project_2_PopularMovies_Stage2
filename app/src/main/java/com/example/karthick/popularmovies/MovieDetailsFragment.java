@@ -199,18 +199,35 @@ public class MovieDetailsFragment extends Fragment implements LoaderManager.Load
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        final int removeFavId = R.mipmap.ic_remove_fav;
+        final int addFavId = R.mipmap.ic_add_fav;
        /*Show the fav icon with corresponding image*/
         if(data.moveToFirst()){
-            favIconImage.setImageResource(R.mipmap.ic_remove_fav);
-        }
-        else{
-            favIconImage.setImageResource(R.mipmap.ic_add_fav);
+            favIconImage.setImageResource(removeFavId);
+            //Set on click listener to remove movie from favoirte on click of fav icon
             favIconImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Toggle Fav Icon
-                    ImageView iv = (ImageView) v;
-                    iv.setImageResource(R.mipmap.ic_remove_fav);
+                    favIconImage.setImageResource(addFavId);
+
+                    //Remove movie from favorites
+                    getContext().getContentResolver().delete(
+                            MovieContract.FavoriteEntry.buildFavoriteMovieUri(movie.getId()),
+                            MovieContract.FavoriteEntry.COLUMN_MOVIE_ID + " = ?",
+                            new String[]{ new Integer(movie.getId()).toString() }
+                            );
+                }
+            });
+        }
+        else{
+            favIconImage.setImageResource(addFavId);
+            //Set on click listener to add movie to favoirte on click of fav icon
+            favIconImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Toggle Fav Icon
+                    favIconImage.setImageResource(removeFavId);
 
                     //Create Content Values
                     ContentValues favoriteValues = new ContentValues();
