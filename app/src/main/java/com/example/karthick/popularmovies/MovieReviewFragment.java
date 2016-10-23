@@ -6,12 +6,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.TextView;
 
-import com.example.karthick.popularmovies.data.Movie;
 import com.example.karthick.popularmovies.data.Review;
-
-import java.util.ArrayList;
 
 /**
  * Created by KarthicK on 10/22/2016.
@@ -19,16 +16,16 @@ import java.util.ArrayList;
  * Fragment to fetch and show the reviews for a movie
  */
 
-public class MovieReviewsFragment extends android.support.v4.app.Fragment{
+public class MovieReviewFragment extends android.support.v4.app.Fragment{
 
-    private static final String LOG_TAG = MovieReviewsFragment.class.getSimpleName();
+    private static final String LOG_TAG = MovieReviewFragment.class.getSimpleName();
 
     //Key to get parcelable movie object from arguments
-    private static final String ARG_MOVIE = "movie";
+    private static final String ARG_REVIEW = "review";
 
-    private Movie movie = null;
+    private Review review = null;
 
-    public MovieReviewsFragment(){
+    public MovieReviewFragment(){
         //Required empty public constructor
     }
 
@@ -36,12 +33,12 @@ public class MovieReviewsFragment extends android.support.v4.app.Fragment{
      *Static Factory method to create fragment instance with passed in arguments
      * Work around to pass arguments from an activity to a fragment
      * */
-    public static MovieReviewsFragment newInstance(Movie movie){
-        MovieReviewsFragment movieReviewsFragment = new MovieReviewsFragment();
+    public static MovieReviewFragment newInstance(Review review){
+        MovieReviewFragment movieReviewFragment = new MovieReviewFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_MOVIE, movie);
-        movieReviewsFragment.setArguments(bundle);
-        return movieReviewsFragment;
+        bundle.putParcelable(ARG_REVIEW, review);
+        movieReviewFragment.setArguments(bundle);
+        return movieReviewFragment;
     }
 
     /**
@@ -62,7 +59,7 @@ public class MovieReviewsFragment extends android.support.v4.app.Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null){
-            movie = (Movie)getArguments().getParcelable(ARG_MOVIE);
+            review = (Review)getArguments().getParcelable(ARG_REVIEW);
         }
     }
 
@@ -88,22 +85,14 @@ public class MovieReviewsFragment extends android.support.v4.app.Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //inflate movie reviews fragment layout
-        View rootView = inflater.inflate(R.layout.movie_reviews_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.list_item_review, container, false);
 
-        //Find list view for reviews
-        ListView reviewsListView = (ListView) rootView.findViewById(R.id.listview_reviews);
-
-        //Create Dummy reviews
-        ArrayList<Review> reviewArrayList = new ArrayList<Review>();
-        reviewArrayList.add(new Review("abc", "subbudu", "kilee kilee nu kilichiruven"));
-        reviewArrayList.add(new Review("bbc", "nadupakka nakki", "nakk nakk nakk"));
-        reviewArrayList.add(new Review("nbc", "surprise sathish", "technically originally basically..."));
-
-        //Initialize custom array adapter
-        ReviewAdapter reviewAdapter = new ReviewAdapter(getActivity(), reviewArrayList);
-
-        //Bind adapter and adapter view
-        reviewsListView.setAdapter(reviewAdapter);
+        if(review != null){
+            TextView userName = (TextView)rootView.findViewById(R.id.review_item_user_name);
+            TextView content = (TextView)rootView.findViewById(R.id.review_item_content);
+            userName.setText(review.getAuthor());
+            content.setText(review.getContent());
+        }
 
         return rootView;
     }

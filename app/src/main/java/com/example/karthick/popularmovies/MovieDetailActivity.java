@@ -2,6 +2,7 @@ package com.example.karthick.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -36,6 +37,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static final String MOVIE_API_BASE_URL = "https://api.themoviedb.org";
 
     private static final String LOG_TAG = AppCompatActivity.class.getSimpleName();
+
+    ArrayList<MovieReviewFragment> movieReviewFragments = new ArrayList<MovieReviewFragment>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +80,13 @@ public class MovieDetailActivity extends AppCompatActivity {
                         if (statusCode == 200){
                             ReviewDBResult reviewDBResult = response.body();
                             ArrayList<Review> reviewArrayList = reviewDBResult.getReviewArrayList();
-                            ArrayList<MovieReviewsFragment> movieReviewsFragments = new ArrayList<MovieReviewsFragment>();
-                            /* for each review create a review fragment*/
+                            /* for each review add a review fragment*/
+                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                             for(Review review : reviewArrayList){
-                                movieReviewsFragments.add(MovieReviewsFragment.newInstance(movie));
+                                transaction.add(R.id.movie_details_layout, MovieReviewFragment.newInstance(review))
+                                        .add(R.id.movie_details_layout, new ContentSeperatorFragment());
                             }
+                            transaction.commit();
                         }
                     }
 
