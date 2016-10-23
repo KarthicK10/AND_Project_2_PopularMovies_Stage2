@@ -45,25 +45,25 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static final String LOG_TAG = AppCompatActivity.class.getSimpleName();
 
     ArrayList<MovieReviewFragment> movieReviewFragments = new ArrayList<MovieReviewFragment>();
+    ArrayList<Video> mVideoArrayList = new ArrayList<>();
+    ArrayList<Review> mReviewArrayList = new ArrayList<>();
 
-    ArrayList<Video> videoArrayList = new ArrayList<>();
-
-    Retrofit retrofit = new Retrofit.Builder()
+    final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(MOVIE_API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
     final MovieDBAPI movieDBAPI = retrofit.create(MovieDBAPI.class);
 
-    final String apiKey = getString(R.string.movieDbApiKey);
+    private boolean firstCreation = true; //Flags if activity is created for first time or on screen rotation. Helps to use values from savedInstanceState
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail_activity);
 
-        if(savedInstanceState == null){
-
+        if(savedInstanceState == null || !savedInstanceState.containsKey(Video.VIDEO_LIST_PARCEL_KEY) ){
             /*Get the movie object from the Intent
             * and pass it to the fragments*/
             Intent movieDetailsIntent = getIntent();
@@ -91,14 +91,37 @@ public class MovieDetailActivity extends AppCompatActivity {
                 getVideosFromApi(movie);
             }
 
+        }else{
+            mVideoArrayList = savedInstanceState.getParcelableArrayList(Video.VIDEO_LIST_PARCEL_KEY);
+            firstCreation = false;
         }
         
     }
 
-    /*Method to get Reviews data from the API using Retrofit
-    * and add those to fragments*/
-    private void getReviewsFromApi(Movie movie){
+    /**
+     * Dispatch onStart() to all fragments.  Ensure any created loaders are
+     * now started.
+     */
+    @Override
+    protected void onStart() {
+        Log.d(LOG_TAG, "onStart");
+        super.onStart();
+        if(!firstCreation){
+            setOnClickListenerForBackdropImage();
+        }
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.d(LOG_TAG, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(Video.VIDEO_LIST_PARCEL_KEY, mVideoArrayList);
+    }
+
+    /*Method to get Reviews data from the API using Retrofit
+                * and add those to fragments*/
+    private void getReviewsFromApi(Movie movie){
+        String apiKey = getString(R.string.movieDbApiKey);
         Call<ReviewDBResult> reviewsCall = movieDBAPI.getReviewsList(movie.getId(), apiKey);
 
         /*Iterate reviews result to create Review fragments */
@@ -109,17 +132,16 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Log.i(LOG_TAG, "Retrofit status code for reviews :" + statusCode);
                 if (statusCode == 200){
                     ReviewDBResult reviewDBResult = response.body();
-                    ArrayList<Review> reviewArrayList = reviewDBResult.getReviewArrayList();
+                    mReviewArrayList = reviewDBResult.getReviewArrayList();
                     /* for each review add a review fragment*/
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    for(Review review : reviewArrayList){
+                    for(Review review : mReviewArrayList){
                         transaction.add(R.id.movie_details_layout, MovieReviewFragment.newInstance(review))
                                 .add(R.id.movie_details_layout, new ContentSeperatorFragment());
                     }
                     transaction.commit();
                 }
             }
-
             @Override
             public void onFailure(Call<ReviewDBResult> call, Throwable t) {
                 Log.e(LOG_TAG, t.getMessage());
@@ -131,16 +153,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     /*Method to get Videos data from the API using Retrofit
     * and those to the fragments*/
     private void getVideosFromApi(Movie movie){
-
+        String apiKey = getString(R.string.movieDbApiKey);
         Call<VideoDBResult> videosCall = movieDBAPI.getVideosList(movie.getId(), apiKey);
-
-        /* Rootview of detail activity
-        to be used after response received from Retrofit
-        to access the backdrop image view of movie details fragment
-        */
-        final ViewGroup rootViewOfDetailActivity = (ViewGroup) this.findViewById(R.id.movie_details_activity);
-
-        /*Iterate videos results*/
+        /*Get videos list*/
         videosCall.enqueue(new Callback<VideoDBResult>() {
             @Override
             public void onResponse(Call<VideoDBResult> call, Response<VideoDBResult> response) {
@@ -148,31 +163,38 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Log.i(LOG_TAG, "Retrofit status code for Videos :" + statusCode);
                 if(statusCode == 200){
                     VideoDBResult videoDBResult = response.body();
-                    videoArrayList = videoDBResult.getVideoArrayList();
-                    //Get the first trailer video
-                    final Video firstTrailerVideo = videoArrayList.get(0);
-                    if(firstTrailerVideo != null && firstTrailerVideo.getKey() != null){
-                        //Get backdrop image view
-                        ImageView backDropImageView = (ImageView)rootViewOfDetailActivity.findViewById(R.id.movie_detail_fragment_backdrop_image);
-                                /*Set on click listener for backdrop image to show trailer on youtube */
-                        backDropImageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?")
-                                        .buildUpon().appendQueryParameter("v", firstTrailerVideo.getKey())
-                                        .build());
-                                startActivity(youTubeIntent);
-                            }
-                        });
-                    }
+                    mVideoArrayList = videoDBResult.getVideoArrayList();
+                    //Set onClickListener for backdrop image
+                    setOnClickListenerForBackdropImage();
                 }
             }
-
             @Override
             public void onFailure(Call<VideoDBResult> call, Throwable t) {
                 Log.e(LOG_TAG, t.getMessage());
             }
         });
+    }
 
+    private void setOnClickListenerForBackdropImage(){
+        /* Rootview of detail activity
+        to access the backdrop image view of movie details fragment
+        */
+        final ViewGroup rootViewOfDetailActivity = (ViewGroup) this.findViewById(R.id.movie_details_activity);
+        //Get the first trailer video
+        final Video firstTrailerVideo = mVideoArrayList.get(0);
+        if(firstTrailerVideo != null && firstTrailerVideo.getKey() != null){
+            //Get backdrop image view
+            ImageView backDropImageView = (ImageView)rootViewOfDetailActivity.findViewById(R.id.movie_detail_fragment_backdrop_image);
+                                /*Set on click listener for backdrop image to show trailer on youtube */
+            backDropImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?")
+                            .buildUpon().appendQueryParameter("v", firstTrailerVideo.getKey())
+                            .build());
+                    startActivity(youTubeIntent);
+                }
+            });
+        }
     }
 }
