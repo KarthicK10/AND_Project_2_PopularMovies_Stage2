@@ -1,5 +1,6 @@
 package com.example.karthick.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.karthick.popularmovies.data.Video;
+
+import java.util.ArrayList;
+
 /**
  * Created by KarthicK on 10/23/2016.
  */
@@ -17,16 +22,42 @@ import android.widget.TextView;
 public class MoreVideosLinkFragment extends Fragment {
     private static final String LOG_TAG = MoreVideosLinkFragment.class.getSimpleName();
 
+    private ArrayList<Video> mVideoArrayList = new ArrayList<>();
+
     public MoreVideosLinkFragment(){
         //required empty public constructor
     }
 
     /* Static factory method */
-    public static MoreVideosLinkFragment createInstance(){
+    public static MoreVideosLinkFragment createInstance(ArrayList<Video> movieVideosList){
         MoreVideosLinkFragment moreVideosLinkFragment = new MoreVideosLinkFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(Video.VIDEO_LIST_PARCEL_KEY, movieVideosList);
+        moreVideosLinkFragment.setArguments(bundle);
         return moreVideosLinkFragment;
     }
 
+    /**
+     * Called to do initial creation of a fragment.  This is called after
+     * {@link #onAttach(Context)} and before
+     * {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * <p>
+     * <p>Note that this can be called while the fragment's activity is
+     * still in the process of being created.  As such, you can not rely
+     * on things like the activity's content view hierarchy being initialized
+     * at this point.  If you want to do work once the activity itself is
+     * created, see {@link #onActivityCreated(Bundle)}.
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     *                           a previous saved state, this is the state.
+     */
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments() != null){
+            mVideoArrayList = getArguments().getParcelableArrayList(Video.VIDEO_LIST_PARCEL_KEY);
+        }
+    }
 
     /**
      * Called to have the fragment instantiate its user interface view.
@@ -58,6 +89,7 @@ public class MoreVideosLinkFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent movieTrailersIntent = new Intent(getActivity(), MovieVideosActivity.class);
+                movieTrailersIntent.putParcelableArrayListExtra(Video.VIDEO_LIST_PARCEL_KEY, mVideoArrayList);
                 startActivity(movieTrailersIntent);
             }
         });
