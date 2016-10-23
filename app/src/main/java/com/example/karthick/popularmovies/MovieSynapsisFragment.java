@@ -19,8 +19,6 @@ import com.example.karthick.popularmovies.data.Movie;
  */
 public class MovieSynapsisFragment extends android.support.v4.app.Fragment {
 
-    private static final String ARG_MOVIE = "movie";
-
     private Movie movie = null;
 
     public MovieSynapsisFragment() {
@@ -37,7 +35,7 @@ public class MovieSynapsisFragment extends android.support.v4.app.Fragment {
     public static MovieSynapsisFragment newInstance(Movie movie) {
         MovieSynapsisFragment fragment = new MovieSynapsisFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_MOVIE, movie);
+        args.putParcelable(Movie.MOVIE_PARCEL_KEY, movie);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,7 +44,7 @@ public class MovieSynapsisFragment extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            movie = getArguments().getParcelable(ARG_MOVIE);
+            movie = getArguments().getParcelable(Movie.MOVIE_PARCEL_KEY);
         }
     }
 

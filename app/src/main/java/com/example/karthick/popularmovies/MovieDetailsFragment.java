@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +39,7 @@ import java.text.SimpleDateFormat;
  */
 public class MovieDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
-
-    private static final String ARG_MOVIE = "movie";
+    private static final String LOG_TAG = MovieDetailsFragment.class.getSimpleName();
 
     private Movie movie = null;
 
@@ -61,7 +61,7 @@ public class MovieDetailsFragment extends Fragment implements LoaderManager.Load
     public static MovieDetailsFragment newInstance(Movie movie) {
         MovieDetailsFragment fragment = new MovieDetailsFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_MOVIE, movie);
+        args.putParcelable(Movie.MOVIE_PARCEL_KEY, movie);
         fragment.setArguments(args);
         return fragment;
     }
@@ -87,16 +87,17 @@ public class MovieDetailsFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            movie = getArguments().getParcelable(ARG_MOVIE);
+            movie = getArguments().getParcelable(Movie.MOVIE_PARCEL_KEY);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        Log.d(LOG_TAG, "onCreateView");
         /*Inflate movie detail fragment layout */
         View rootView = inflater.inflate(R.layout.movie_detail_fragment, container, false);
 

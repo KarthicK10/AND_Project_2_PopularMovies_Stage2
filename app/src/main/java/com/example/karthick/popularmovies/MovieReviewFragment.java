@@ -20,9 +20,6 @@ public class MovieReviewFragment extends android.support.v4.app.Fragment{
 
     private static final String LOG_TAG = MovieReviewFragment.class.getSimpleName();
 
-    //Key to get parcelable movie object from arguments
-    private static final String ARG_REVIEW = "review";
-
     private Review review = null;
 
     public MovieReviewFragment(){
@@ -36,7 +33,7 @@ public class MovieReviewFragment extends android.support.v4.app.Fragment{
     public static MovieReviewFragment newInstance(Review review){
         MovieReviewFragment movieReviewFragment = new MovieReviewFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_REVIEW, review);
+        bundle.putParcelable(Review.REVIEW_PARCEL_KEY, review);
         movieReviewFragment.setArguments(bundle);
         return movieReviewFragment;
     }
@@ -59,7 +56,7 @@ public class MovieReviewFragment extends android.support.v4.app.Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null){
-            review = (Review)getArguments().getParcelable(ARG_REVIEW);
+            review = (Review)getArguments().getParcelable(Review.REVIEW_PARCEL_KEY);
         }
     }
 

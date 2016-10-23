@@ -15,6 +15,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Video implements Parcelable {
 
+    public static final String VIDEO_PARCEL_KEY = "VIDEO_PARCEL";
+    public static final String VIDEO_LIST_PARCEL_KEY = "VIDEO_LIST_PARCEL";
+
     @SerializedName("id")
     private String id;
 
