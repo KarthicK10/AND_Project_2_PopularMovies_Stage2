@@ -35,7 +35,7 @@ public class TrailerAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         //get the data item for this position
-        Video trailer = (Video) getItem(position);
+        final Video trailer = (Video) getItem(position);
         //Check if an existing view can be reused, else inflate a new view
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_trailer, parent, false);

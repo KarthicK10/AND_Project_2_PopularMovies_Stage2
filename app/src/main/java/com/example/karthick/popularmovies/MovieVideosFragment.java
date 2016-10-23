@@ -1,6 +1,8 @@
 package com.example.karthick.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.karthick.popularmovies.data.Video;
@@ -70,10 +73,23 @@ public class MovieVideosFragment extends Fragment {
         ListView videosListView = (ListView) rootView.findViewById(R.id.listview_trailers);
 
         //Initialize custom array adapter
-        TrailerAdapter trailerAdapter = new TrailerAdapter(getActivity(), mVideoArrayList);
+        final TrailerAdapter trailerAdapter = new TrailerAdapter(getActivity(), mVideoArrayList);
 
         //Bind adapter and adapter view
         videosListView.setAdapter(trailerAdapter);
+
+        /*Set onClick Listener to the list items to launch video in YouTube */
+        videosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Video trailer = (Video) trailerAdapter.getItem(position);
+                Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/")
+                        .buildUpon().appendPath("watch").build()
+                        .buildUpon().appendQueryParameter("v", trailer.getKey())
+                        .build());
+                startActivity(youTubeIntent);
+            }
+        });
 
         return rootView;
     }
