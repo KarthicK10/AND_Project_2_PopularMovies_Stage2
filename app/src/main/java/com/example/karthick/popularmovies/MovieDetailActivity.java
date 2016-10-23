@@ -48,6 +48,15 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     ArrayList<Video> videoArrayList = new ArrayList<>();
 
+    Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(MOVIE_API_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+
+    final MovieDBAPI movieDBAPI = retrofit.create(MovieDBAPI.class);
+
+    final String apiKey = getString(R.string.movieDbApiKey);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,89 +76,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                 MovieDetailsFragment movieDetailFragment = MovieDetailsFragment.newInstance(movie);
                 MovieSynapsisFragment movieSynapsisFragment = MovieSynapsisFragment.newInstance(movie);
 
-                /*Get Reviews data from the API using Retrofit */
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(MOVIE_API_BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-
-                final MovieDBAPI movieDBAPI = retrofit.create(MovieDBAPI.class);
-
-                final String apiKey = getString(R.string.movieDbApiKey);
-
-                Call<ReviewDBResult> reviewsCall = movieDBAPI.getReviewsList(movie.getId(), apiKey);
-
-                /*Iterate reviews result to create Review fragments */
-                reviewsCall.enqueue(new Callback<ReviewDBResult>() {
-                    @Override
-                    public void onResponse(Call<ReviewDBResult> call, Response<ReviewDBResult> response) {
-                        int statusCode = response.code();
-                        Log.i(LOG_TAG, "Retrofit status code for reviews :" + statusCode);
-                        if (statusCode == 200){
-                            ReviewDBResult reviewDBResult = response.body();
-                            ArrayList<Review> reviewArrayList = reviewDBResult.getReviewArrayList();
-                            /* for each review add a review fragment*/
-                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            for(Review review : reviewArrayList){
-                                transaction.add(R.id.movie_details_layout, MovieReviewFragment.newInstance(review))
-                                        .add(R.id.movie_details_layout, new ContentSeperatorFragment());
-                            }
-                            transaction.commit();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ReviewDBResult> call, Throwable t) {
-                        Log.e(LOG_TAG, t.getMessage());
-                    }
-                });
-
-
-                /*Get trailer/teaser videos data from the API using Retrofit */
-                Call<VideoDBResult> videosCall = movieDBAPI.getVideosList(movie.getId(), apiKey);
-
-                /* Rootview of detail activity
-                to be used after response received from Retrofit
-                to access the backdrop image view of movie details fragment
-                */
-                final ViewGroup rootViewOfDetailActivity = (ViewGroup) this.findViewById(R.id.movie_details_activity);
-
-                /*Iterate videos results*/
-                videosCall.enqueue(new Callback<VideoDBResult>() {
-                    @Override
-                    public void onResponse(Call<VideoDBResult> call, Response<VideoDBResult> response) {
-                        int statusCode = response.code();
-                        Log.i(LOG_TAG, "Retrofit status code for Videos :" + statusCode);
-                        if(statusCode == 200){
-                            VideoDBResult videoDBResult = response.body();
-                            videoArrayList = videoDBResult.getVideoArrayList();
-                            //Get the first trailer video
-                            final Video firstTrailerVideo = videoArrayList.get(0);
-                            if(firstTrailerVideo != null && firstTrailerVideo.getKey() != null){
-                                //Get backdrop image view
-                                ImageView backDropImageView = (ImageView)rootViewOfDetailActivity.findViewById(R.id.movie_detail_fragment_backdrop_image);
-                                /*Set on click listener for backdrop image to show trailer on youtube */
-                                backDropImageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?")
-                                                .buildUpon().appendQueryParameter("v", firstTrailerVideo.getKey())
-                                                .build());
-                                        startActivity(youTubeIntent);
-                                    }
-                                });
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<VideoDBResult> call, Throwable t) {
-                        Log.e(LOG_TAG, t.getMessage());
-                    }
-                });
-
-
-
                 /*Add the fragments*/
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.movie_details_layout, movieDetailFragment)
@@ -157,9 +83,96 @@ public class MovieDetailActivity extends AppCompatActivity {
                         .add(R.id.movie_details_layout, movieSynapsisFragment)
                         .add(R.id.movie_details_layout, new ContentSeperatorFragment())
                         .commit();
+
+                /*Get Reviews data from the API using Retrofit */
+                getReviewsFromApi(movie);
+
+                /*Get trailer/teaser videos data from the API using Retrofit */
+                getVideosFromApi(movie);
             }
 
         }
         
+    }
+
+    /*Method to get Reviews data from the API using Retrofit
+    * and add those to fragments*/
+    private void getReviewsFromApi(Movie movie){
+
+        Call<ReviewDBResult> reviewsCall = movieDBAPI.getReviewsList(movie.getId(), apiKey);
+
+        /*Iterate reviews result to create Review fragments */
+        reviewsCall.enqueue(new Callback<ReviewDBResult>() {
+            @Override
+            public void onResponse(Call<ReviewDBResult> call, Response<ReviewDBResult> response) {
+                int statusCode = response.code();
+                Log.i(LOG_TAG, "Retrofit status code for reviews :" + statusCode);
+                if (statusCode == 200){
+                    ReviewDBResult reviewDBResult = response.body();
+                    ArrayList<Review> reviewArrayList = reviewDBResult.getReviewArrayList();
+                    /* for each review add a review fragment*/
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    for(Review review : reviewArrayList){
+                        transaction.add(R.id.movie_details_layout, MovieReviewFragment.newInstance(review))
+                                .add(R.id.movie_details_layout, new ContentSeperatorFragment());
+                    }
+                    transaction.commit();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReviewDBResult> call, Throwable t) {
+                Log.e(LOG_TAG, t.getMessage());
+            }
+        });
+    }
+
+
+    /*Method to get Videos data from the API using Retrofit
+    * and those to the fragments*/
+    private void getVideosFromApi(Movie movie){
+
+        Call<VideoDBResult> videosCall = movieDBAPI.getVideosList(movie.getId(), apiKey);
+
+        /* Rootview of detail activity
+        to be used after response received from Retrofit
+        to access the backdrop image view of movie details fragment
+        */
+        final ViewGroup rootViewOfDetailActivity = (ViewGroup) this.findViewById(R.id.movie_details_activity);
+
+        /*Iterate videos results*/
+        videosCall.enqueue(new Callback<VideoDBResult>() {
+            @Override
+            public void onResponse(Call<VideoDBResult> call, Response<VideoDBResult> response) {
+                int statusCode = response.code();
+                Log.i(LOG_TAG, "Retrofit status code for Videos :" + statusCode);
+                if(statusCode == 200){
+                    VideoDBResult videoDBResult = response.body();
+                    videoArrayList = videoDBResult.getVideoArrayList();
+                    //Get the first trailer video
+                    final Video firstTrailerVideo = videoArrayList.get(0);
+                    if(firstTrailerVideo != null && firstTrailerVideo.getKey() != null){
+                        //Get backdrop image view
+                        ImageView backDropImageView = (ImageView)rootViewOfDetailActivity.findViewById(R.id.movie_detail_fragment_backdrop_image);
+                                /*Set on click listener for backdrop image to show trailer on youtube */
+                        backDropImageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?")
+                                        .buildUpon().appendQueryParameter("v", firstTrailerVideo.getKey())
+                                        .build());
+                                startActivity(youTubeIntent);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VideoDBResult> call, Throwable t) {
+                Log.e(LOG_TAG, t.getMessage());
+            }
+        });
+
     }
 }
