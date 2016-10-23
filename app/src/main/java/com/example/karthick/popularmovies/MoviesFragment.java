@@ -167,6 +167,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         prevSortOrder = getSortOrderPath();
         Log.i("Saving sort order : ", getSortOrderPath());
         outState.putString(SORT_ORDER, prevSortOrder);
+        mSavedInstanceAvailable = true;
     }
 
     /**
@@ -217,7 +218,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                     MovieDBResult movieDBResult = response.body();
                     Log.i(LOG_TAG, "Retrofit call Status code : " + statusCode);
                     ArrayList<Movie> moviesList = movieDBResult.getMoviesList();
-                    if(moviesList != null && getActivity() != null && isAdded() && moviesGridAdapter != null){
+                    if(moviesGridAdapter != null){
                         int currentSize = moviesGridAdapter.getItemCount();
                         mMoviesList.addAll(moviesList);
                         moviesGridAdapter.notifyItemRangeInserted(currentSize, moviesList.size()-1);
