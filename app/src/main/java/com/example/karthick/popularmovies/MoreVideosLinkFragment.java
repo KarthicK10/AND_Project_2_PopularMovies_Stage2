@@ -14,17 +14,17 @@ import android.widget.TextView;
  * Created by KarthicK on 10/23/2016.
  */
 
-public class MoreVideosTouchFragment extends Fragment {
-    private static final String LOG_TAG = MoreVideosTouchFragment.class.getSimpleName();
+public class MoreVideosLinkFragment extends Fragment {
+    private static final String LOG_TAG = MoreVideosLinkFragment.class.getSimpleName();
 
-    public MoreVideosTouchFragment(){
+    public MoreVideosLinkFragment(){
         //required empty public constructor
     }
 
     /* Static factory method */
-    public static MoreVideosTouchFragment createInstance(){
-        MoreVideosTouchFragment moreVideosTouchFragment = new MoreVideosTouchFragment();
-        return moreVideosTouchFragment;
+    public static MoreVideosLinkFragment createInstance(){
+        MoreVideosLinkFragment moreVideosLinkFragment = new MoreVideosLinkFragment();
+        return moreVideosLinkFragment;
     }
 
 

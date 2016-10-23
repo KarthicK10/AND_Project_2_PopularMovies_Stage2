@@ -206,7 +206,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private void addMoreVideosFragment(){
         Log.i(LOG_TAG, "Addig More Videos fragment");
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.more_videos_fragment_holder, new MoreVideosTouchFragment())
+                .add(R.id.more_videos_fragment_holder, new MoreVideosLinkFragment())
                 .add(R.id.more_videos_fragment_holder, new ContentSeperatorFragment())
                 .commit();
     }
