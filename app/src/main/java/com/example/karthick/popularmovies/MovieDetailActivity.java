@@ -64,6 +64,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.movie_detail_activity);
 
         if(savedInstanceState == null || !savedInstanceState.containsKey(Video.VIDEO_LIST_PARCEL_KEY) ){
+
             /*Get the movie object from the Intent
             * and pass it to the fragments*/
             Intent movieDetailsIntent = getIntent();
@@ -78,10 +79,10 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                 /*Add the fragments*/
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.movie_details_layout, movieDetailFragment)
-                        .add(R.id.movie_details_layout, new ContentSeperatorFragment())
-                        .add(R.id.movie_details_layout, movieSynapsisFragment)
-                        .add(R.id.movie_details_layout, new ContentSeperatorFragment())
+                        .add(R.id.movie_details_fragment_holder, movieDetailFragment)
+                        .add(R.id.movie_details_fragment_holder, new ContentSeperatorFragment())
+                        .add(R.id.movie_synapsis_fragment_holder, movieSynapsisFragment)
+                        .add(R.id.movie_synapsis_fragment_holder, new ContentSeperatorFragment())
                         .commit();
 
                 /*Get Reviews data from the API using Retrofit */
@@ -136,8 +137,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                     /* for each review add a review fragment*/
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     for(Review review : mReviewArrayList){
-                        transaction.add(R.id.movie_details_layout, MovieReviewFragment.newInstance(review))
-                                .add(R.id.movie_details_layout, new ContentSeperatorFragment());
+                        transaction.add(R.id.reviews_fragment_holder, MovieReviewFragment.newInstance(review))
+                                .add(R.id.reviews_fragment_holder, new ContentSeperatorFragment());
                     }
                     transaction.commit();
                 }
@@ -166,6 +167,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                     mVideoArrayList = videoDBResult.getVideoArrayList();
                     //Set onClickListener for backdrop image
                     setOnClickListenerForBackdropImage();
+                    if(mVideoArrayList.size() > 1){
+                        //Add more videos fragment
+                        addMoreVideosFragment();
+                    }
                 }
             }
             @Override
@@ -196,5 +201,13 @@ public class MovieDetailActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void addMoreVideosFragment(){
+        Log.i(LOG_TAG, "Addig More Videos fragment");
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.more_videos_fragment_holder, new MoreVideosTouchFragment())
+                .add(R.id.more_videos_fragment_holder, new ContentSeperatorFragment())
+                .commit();
     }
 }

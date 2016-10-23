@@ -53,4 +53,6 @@
 
    <!-- End Preference Settings -->
 
+    <string name="more_trailers" translatable="true">More Trailers</string>
+
 </resources>
