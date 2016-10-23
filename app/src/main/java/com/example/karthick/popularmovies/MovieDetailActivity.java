@@ -1,10 +1,14 @@
 package com.example.karthick.popularmovies;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.karthick.popularmovies.data.Movie;
 import com.example.karthick.popularmovies.data.Review;
@@ -41,6 +45,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static final String LOG_TAG = AppCompatActivity.class.getSimpleName();
 
     ArrayList<MovieReviewFragment> movieReviewFragments = new ArrayList<MovieReviewFragment>();
+
+    ArrayList<Video> videoArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +108,12 @@ public class MovieDetailActivity extends AppCompatActivity {
                 /*Get trailer/teaser videos data from the API using Retrofit */
                 Call<VideoDBResult> videosCall = movieDBAPI.getVideosList(movie.getId(), apiKey);
 
+                /* Rootview of detail activity
+                to be used after response received from Retrofit
+                to access the backdrop image view of movie details fragment
+                */
+                final ViewGroup rootViewOfDetailActivity = (ViewGroup) this.findViewById(R.id.movie_details_activity);
+
                 /*Iterate videos results*/
                 videosCall.enqueue(new Callback<VideoDBResult>() {
                     @Override
@@ -110,9 +122,22 @@ public class MovieDetailActivity extends AppCompatActivity {
                         Log.i(LOG_TAG, "Retrofit status code for Videos :" + statusCode);
                         if(statusCode == 200){
                             VideoDBResult videoDBResult = response.body();
-                            ArrayList<Video> videoArrayList = videoDBResult.getVideoArrayList();
-                            for(Video video : videoArrayList){
-                                Log.i(LOG_TAG, video.toString());
+                            videoArrayList = videoDBResult.getVideoArrayList();
+                            //Get the first trailer video
+                            final Video firstTrailerVideo = videoArrayList.get(0);
+                            if(firstTrailerVideo != null && firstTrailerVideo.getKey() != null){
+                                //Get backdrop image view
+                                ImageView backDropImageView = (ImageView)rootViewOfDetailActivity.findViewById(R.id.movie_detail_fragment_backdrop_image);
+                                /*Set on click listener for backdrop image to show trailer on youtube */
+                                backDropImageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?")
+                                                .buildUpon().appendQueryParameter("v", firstTrailerVideo.getKey())
+                                                .build());
+                                        startActivity(youTubeIntent);
+                                    }
+                                });
                             }
                         }
                     }
