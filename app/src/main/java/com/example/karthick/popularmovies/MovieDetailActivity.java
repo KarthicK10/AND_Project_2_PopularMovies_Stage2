@@ -9,6 +9,8 @@ import android.util.Log;
 import com.example.karthick.popularmovies.data.Movie;
 import com.example.karthick.popularmovies.data.Review;
 import com.example.karthick.popularmovies.data.ReviewDBResult;
+import com.example.karthick.popularmovies.data.Video;
+import com.example.karthick.popularmovies.data.VideoDBResult;
 
 import java.util.ArrayList;
 
@@ -65,18 +67,18 @@ public class MovieDetailActivity extends AppCompatActivity {
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
-                MovieDBAPI movieDBAPI = retrofit.create(MovieDBAPI.class);
+                final MovieDBAPI movieDBAPI = retrofit.create(MovieDBAPI.class);
 
-                String apiKey = getString(R.string.movieDbApiKey);
+                final String apiKey = getString(R.string.movieDbApiKey);
 
-                Call<ReviewDBResult> call = movieDBAPI.getReviewsList(movie.getId(), apiKey);
+                Call<ReviewDBResult> reviewsCall = movieDBAPI.getReviewsList(movie.getId(), apiKey);
 
                 /*Iterate reviews result to create Review fragments */
-                call.enqueue(new Callback<ReviewDBResult>() {
+                reviewsCall.enqueue(new Callback<ReviewDBResult>() {
                     @Override
                     public void onResponse(Call<ReviewDBResult> call, Response<ReviewDBResult> response) {
                         int statusCode = response.code();
-                        Log.i(LOG_TAG, "Retrofit status code :" + statusCode);
+                        Log.i(LOG_TAG, "Retrofit status code for reviews :" + statusCode);
                         if (statusCode == 200){
                             ReviewDBResult reviewDBResult = response.body();
                             ArrayList<Review> reviewArrayList = reviewDBResult.getReviewArrayList();
@@ -95,6 +97,32 @@ public class MovieDetailActivity extends AppCompatActivity {
                         Log.e(LOG_TAG, t.getMessage());
                     }
                 });
+
+
+                /*Get trailer/teaser videos data from the API using Retrofit */
+                Call<VideoDBResult> videosCall = movieDBAPI.getVideosList(movie.getId(), apiKey);
+
+                /*Iterate videos results*/
+                videosCall.enqueue(new Callback<VideoDBResult>() {
+                    @Override
+                    public void onResponse(Call<VideoDBResult> call, Response<VideoDBResult> response) {
+                        int statusCode = response.code();
+                        Log.i(LOG_TAG, "Retrofit status code for Videos :" + statusCode);
+                        if(statusCode == 200){
+                            VideoDBResult videoDBResult = response.body();
+                            ArrayList<Video> videoArrayList = videoDBResult.getVideoArrayList();
+                            for(Video video : videoArrayList){
+                                Log.i(LOG_TAG, video.toString());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<VideoDBResult> call, Throwable t) {
+                        Log.e(LOG_TAG, t.getMessage());
+                    }
+                });
+
 
 
                 /*Add the fragments*/

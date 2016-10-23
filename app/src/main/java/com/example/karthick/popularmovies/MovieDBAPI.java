@@ -2,6 +2,7 @@ package com.example.karthick.popularmovies;
 
 import com.example.karthick.popularmovies.data.MovieDBResult;
 import com.example.karthick.popularmovies.data.ReviewDBResult;
+import com.example.karthick.popularmovies.data.VideoDBResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -20,4 +21,7 @@ public interface MovieDBAPI {
 
     @GET("/3/movie/{id}/reviews")
     Call<ReviewDBResult> getReviewsList(@Path("id") int movieId, @Query("api_key") String apiKey);
+
+    @GET("/3/movie/{id}/videos")
+    Call<VideoDBResult> getVideosList(@Path("id") int movieId, @Query("api_key") String apiKey);
 }
