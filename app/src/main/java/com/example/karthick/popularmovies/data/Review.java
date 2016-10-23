@@ -1,5 +1,8 @@
 package com.example.karthick.popularmovies.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,7 +11,9 @@ import com.google.gson.annotations.SerializedName;
  * Represents a Review
  */
 
-public class Review {
+public class Review implements Parcelable{
+
+    public static final String REVIEW_PARCEL_KEY = "REVIEW_PARCEL";
 
     @SerializedName("id")
     private String review_id;
@@ -18,6 +23,52 @@ public class Review {
 
     @SerializedName("content")
     private String content;
+
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's
+     * marshalled representation.
+     *
+     * @return a bitmask indicating the set of special object types marshalled
+     * by the Parcelable.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(review_id);
+        dest.writeString(author);
+        dest.writeString(content);
+    }
+
+    public static final Parcelable.Creator<Review> CREATOR = new Parcelable.Creator<Review>() {
+
+        @Override
+        public Review createFromParcel(Parcel source) {
+            return new Review(source);
+        }
+
+        @Override
+        public Review[] newArray(int size) {
+            return new Review[size];
+        }
+    };
+
+    private Review (Parcel source){
+        review_id = source.readString();
+        author = source.readString();
+        content = source.readString();
+    }
 
     public Review(String review_id, String author, String content) {
         this.review_id = review_id;
