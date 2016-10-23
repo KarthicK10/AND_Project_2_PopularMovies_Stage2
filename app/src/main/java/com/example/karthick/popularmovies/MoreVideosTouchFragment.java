@@ -1,5 +1,6 @@
 package com.example.karthick.popularmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -49,8 +50,17 @@ public class MoreVideosTouchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreateView");
-        View rootView = inflater.inflate(R.layout.more_videos_touch_fragment, container, false);
-        TextView tv = (TextView)rootView.findViewById(R.id.more_videos_text);
+        View rootView = inflater.inflate(R.layout.more_videos_link_fragment, container, false);
+
+        /*Add onClickListener to go to Movie Trailers screen */
+        TextView moreTrailersTextView = (TextView)rootView.findViewById(R.id.more_videos_text);
+        moreTrailersTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent movieTrailersIntent = new Intent(getActivity(), MovieVideosActivity.class);
+                startActivity(movieTrailersIntent);
+            }
+        });
         return rootView;
     }
 }

@@ -51,8 +51,9 @@
     </string-array>
 
 
-   <!-- End Preference Settings -->
+    <!-- End Preference Settings -->
 
     <string name="more_trailers" translatable="true">More Trailers</string>
+    <string name="title_activity_movie_videos">Movie Trailers</string>
 
 </resources>
