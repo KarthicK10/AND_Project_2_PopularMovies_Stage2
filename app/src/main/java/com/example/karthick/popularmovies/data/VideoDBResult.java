@@ -14,7 +14,7 @@ public class VideoDBResult {
     private int id;
 
     @SerializedName("results")
-    private ArrayList<Video> videoArrayList;
+    private ArrayList<Video> videoArrayList = new ArrayList<>();
 
     public int getId() {
         return id;

@@ -19,7 +19,7 @@ public class ReviewDBResult {
     private int page;
 
     @SerializedName("results")
-    private ArrayList<Review> reviewArrayList;
+    private ArrayList<Review> reviewArrayList = new ArrayList<>();
 
     public int getId() {
         return id;

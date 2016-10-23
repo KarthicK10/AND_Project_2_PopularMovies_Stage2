@@ -15,7 +15,7 @@ public class MovieDBResult {
     private int page;
 
     @SerializedName("results")
-    private ArrayList<Movie> moviesList;
+    private ArrayList<Movie> moviesList = new ArrayList<>();
 
     public int getPage() {
         return page;
