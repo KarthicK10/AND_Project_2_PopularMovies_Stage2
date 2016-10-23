@@ -3,6 +3,7 @@ package com.example.karthick.popularmovies;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -133,8 +134,19 @@ public class MovieDetailsFragment extends Fragment implements LoaderManager.Load
             /*Show User Rating*/ //TODO - Should we even show it in number? as we are anyway showing in stars? Does the user care?
             TextView userRatingText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_user_rating);
             userRatingText.setText(String.format("%.2f", movie.getUserRating() ) + getString(R.string.movie_detail_rating_suffix));
-
+            /*Get favIcon Imageview*/
             favIconImage = (ImageView) rootView.findViewById(R.id.fav_icon);
+
+            /*Set on click listener for backdrop image to show trailer on youtube */
+            backDropImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?")
+                            .buildUpon().appendQueryParameter("v", "OvjAjb0Dp34")
+                            .build());
+                    startActivity(youTubeIntent);
+                }
+            });
         }
         return rootView;
     }
