@@ -3,6 +3,7 @@ package com.example.karthick.popularmovies;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
  */
 public class ContentSeperatorFragment extends Fragment {
 
+    private static final String LOG_TAG = ContentSeperatorFragment.class.getSimpleName();
 
     public ContentSeperatorFragment() {
         // Required empty public constructor
@@ -21,6 +23,7 @@ public class ContentSeperatorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreateView");
 
         /*Inflate the content separator layout */
         View rootView = inflater.inflate(R.layout.content_seperator_fragment, container, false);
