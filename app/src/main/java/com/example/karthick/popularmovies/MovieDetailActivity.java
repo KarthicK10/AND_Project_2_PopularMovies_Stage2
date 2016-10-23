@@ -194,7 +194,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             backDropImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?")
+                    Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/")
+                            .buildUpon().appendPath("watch").build()
                             .buildUpon().appendQueryParameter("v", firstTrailerVideo.getKey())
                             .build());
                     startActivity(youTubeIntent);
