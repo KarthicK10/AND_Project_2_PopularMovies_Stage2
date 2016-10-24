@@ -28,7 +28,7 @@ public class MovieVideosActivity extends AppCompatActivity {
             }
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_details_activity_layout, MovieVideosFragment.createInstance(mVideoArrayList))
+                    .add(R.id.movie_videos_activity_layout, MovieVideosFragment.createInstance(mVideoArrayList))
                     .commit();
         }
 

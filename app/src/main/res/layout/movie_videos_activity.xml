@@ -3,13 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/movie_details_activity_layout"
+    android:id="@+id/movie_videos_activity_layout"
     android:orientation="vertical"
     tools:context=".MovieVideosActivity">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/movie_videos_activity_scroll"/>
 
 </FrameLayout>
