@@ -392,7 +392,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                             data.getString(COL_BACKDROP_PATH),
                             data.getString(COL_SYNAPSIS),
                             data.getDouble(COL_VOTE_AVERAGE), //TODO Vote average is not live data. Could have changed by now.
-                            new Date() //TODO get actual release date
+                            new Date(data.getLong(COL_RELEASE_DATE)) //TODO get actual release date
                     ));
                 }while(data.moveToNext());
                 mMoviesList.clear();
