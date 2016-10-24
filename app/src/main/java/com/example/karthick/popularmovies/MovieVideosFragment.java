@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.GridView;
 
 import com.example.karthick.popularmovies.data.Video;
 
@@ -70,7 +70,7 @@ public class MovieVideosFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.movie_videos_fragment, container, false);
 
         //Find list view for trailers
-        ListView videosListView = (ListView) rootView.findViewById(R.id.listview_trailers);
+        GridView videosListView = (GridView) rootView.findViewById(R.id.grid_view_trailers);
 
         //Initialize custom array adapter
         final TrailerAdapter trailerAdapter = new TrailerAdapter(getActivity(), mVideoArrayList);
