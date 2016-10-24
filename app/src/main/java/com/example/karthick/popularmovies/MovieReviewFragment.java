@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +97,8 @@ public class MovieReviewFragment extends android.support.v4.app.Fragment{
             TextView content = (TextView)rootView.findViewById(R.id.review_item_content);
             userName.setText(mReview.getAuthor());
             content.setText(mReview.getContent());
+            content.setMaxLines(3);
+            content.setEllipsize(TextUtils.TruncateAt.END);
         }
 
         rootView.setOnClickListener(new View.OnClickListener() {
