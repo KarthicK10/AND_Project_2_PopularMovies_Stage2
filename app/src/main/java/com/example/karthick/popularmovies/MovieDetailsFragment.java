@@ -122,7 +122,7 @@ public class MovieDetailsFragment extends Fragment implements LoaderManager.Load
             /*Populate the movie details */
             LinearLayout detailsLayout = (LinearLayout) rootView.findViewById(R.id.movie_detail_fragment_details_layout);
             /*Show Original Title */
-            TextView originalTitleText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_original_title);
+            TextView originalTitleText = (TextView) rootView.findViewById(R.id.movie_detail_fragment_details_layout_original_title);
             originalTitleText.setText(movie.getOriginalTitle());
             /*Show Release Date */
             TextView releaseDateText = (TextView) detailsLayout.findViewById(R.id.movie_detail_fragment_details_layout_release_date);
