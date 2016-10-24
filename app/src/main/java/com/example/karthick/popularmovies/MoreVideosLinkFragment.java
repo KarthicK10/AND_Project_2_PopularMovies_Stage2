@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.karthick.popularmovies.data.Video;
 
@@ -84,8 +83,7 @@ public class MoreVideosLinkFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.more_videos_link_fragment, container, false);
 
         /*Add onClickListener to go to Movie Trailers screen */
-        TextView moreTrailersTextView = (TextView)rootView.findViewById(R.id.more_videos_text);
-        moreTrailersTextView.setOnClickListener(new View.OnClickListener() {
+        rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent movieTrailersIntent = new Intent(getActivity(), MovieVideosActivity.class);
