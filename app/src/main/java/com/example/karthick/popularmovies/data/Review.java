@@ -14,6 +14,7 @@ import com.google.gson.annotations.SerializedName;
 public class Review implements Parcelable{
 
     public static final String REVIEW_PARCEL_KEY = "REVIEW_PARCEL";
+    public static final String REVIEW_LIST_PARCEL_KEY = "REVIEW_LIST_PARCEL";
 
     @SerializedName("id")
     private String review_id;

@@ -45,8 +45,14 @@
             android:name=".MovieVideosActivity"
             android:label="@string/title_activity_movie_videos"
             android:parentActivityName=".MovieDetailActivity">
-
         </activity>
+
+        <activity
+            android:name=".MovieAllReviewsActivity"
+            android:label="@string/title_activity_movie_reviews"
+            android:parentActivityName=".MovieDetailActivity">
+        </activity>
+
     </application>
 
 </manifest>

@@ -137,7 +137,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                     /* for each review add a review fragment*/
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     for(Review review : mReviewArrayList){
-                        transaction.add(R.id.reviews_fragment_holder, MovieReviewFragment.newInstance(review))
+                        transaction.add(R.id.reviews_fragment_holder, MovieReviewFragment.newInstance(review, mReviewArrayList))
                                 .add(R.id.reviews_fragment_holder, new ContentSeperatorFragment());
                     }
                     transaction.commit();

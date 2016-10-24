@@ -1,13 +1,13 @@
 package com.example.karthick.popularmovies;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
 
 import com.example.karthick.popularmovies.data.Review;
 
@@ -19,15 +19,13 @@ import java.util.ArrayList;
  * Fragment to fetch and show the reviews for a movie
  */
 
-public class MovieReviewFragment extends android.support.v4.app.Fragment{
+public class MovieAllReviewsFragment extends android.support.v4.app.Fragment{
 
-    private static final String LOG_TAG = MovieReviewFragment.class.getSimpleName();
-
-    private Review mReview = null;
+    private static final String LOG_TAG = MovieAllReviewsFragment.class.getSimpleName();
 
     private ArrayList<Review> mReviewArrayList = new ArrayList<>();
 
-    public MovieReviewFragment(){
+    public MovieAllReviewsFragment(){
         //Required empty public constructor
     }
 
@@ -35,13 +33,12 @@ public class MovieReviewFragment extends android.support.v4.app.Fragment{
      *Static Factory method to create fragment instance with passed in arguments
      * Work around to pass arguments from an activity to a fragment
      * */
-    public static MovieReviewFragment newInstance(Review review, ArrayList<Review> reviewArrayList){
-        MovieReviewFragment movieReviewFragment = new MovieReviewFragment();
+    public static MovieAllReviewsFragment newInstance(ArrayList<Review> reviewArrayList){
+        MovieAllReviewsFragment movieAllReviewsFragment = new MovieAllReviewsFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(Review.REVIEW_PARCEL_KEY, review);
         bundle.putParcelableArrayList(Review.REVIEW_LIST_PARCEL_KEY, reviewArrayList);
-        movieReviewFragment.setArguments(bundle);
-        return movieReviewFragment;
+        movieAllReviewsFragment.setArguments(bundle);
+        return movieAllReviewsFragment;
     }
 
     /**
@@ -60,9 +57,9 @@ public class MovieReviewFragment extends android.support.v4.app.Fragment{
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
         if(getArguments() != null){
-            mReview = (Review)getArguments().getParcelable(Review.REVIEW_PARCEL_KEY);
             mReviewArrayList = getArguments().getParcelableArrayList(Review.REVIEW_LIST_PARCEL_KEY);
         }
     }
@@ -89,24 +86,16 @@ public class MovieReviewFragment extends android.support.v4.app.Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //inflate movie reviews fragment layout
-        View rootView = inflater.inflate(R.layout.list_item_review, container, false);
+        View rootView = inflater.inflate(R.layout.movie_reviews_fragment, container, false);
 
-        if(mReview != null){
-            TextView userName = (TextView)rootView.findViewById(R.id.review_item_user_name);
-            TextView content = (TextView)rootView.findViewById(R.id.review_item_content);
-            userName.setText(mReview.getAuthor());
-            content.setText(mReview.getContent());
-        }
+        //Find list view for reviews
+        ListView reviewsListView = (ListView) rootView.findViewById(R.id.listview_reviews);
 
-        rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Create Intent and pass to MovieAllReviewsActivity
-                Intent intent = new Intent(getActivity(), MovieAllReviewsActivity.class);
-                intent.putParcelableArrayListExtra(Review.REVIEW_LIST_PARCEL_KEY, mReviewArrayList);
-                startActivity(intent);
-            }
-        });
+        //Initialize custom array adapter
+        ReviewAdapter reviewAdapter = new ReviewAdapter(getActivity(), mReviewArrayList);
+
+        //Bind adapter and adapter view
+        reviewsListView.setAdapter(reviewAdapter);
 
         return rootView;
     }
