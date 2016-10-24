@@ -11,7 +11,9 @@
         android:layout_height="200dp"
         android:id="@+id/movie_detail_fragment_backdrop_image"
         android:scaleType="fitXY"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        android:foreground="@drawable/ic_video_play_foreground"
+        android:foregroundGravity="center"/>
 
     <ImageView
         android:layout_width="100dp"
