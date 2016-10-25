@@ -1,25 +1,77 @@
 package com.example.karthick.popularmovies;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.karthick.popularmovies.data.Movie;
+import com.example.karthick.popularmovies.data.RetrofitAPIProvider;
+import com.example.karthick.popularmovies.data.Review;
+import com.example.karthick.popularmovies.data.ReviewDBResult;
+import com.example.karthick.popularmovies.data.Video;
+import com.example.karthick.popularmovies.data.VideoDBResult;
+
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity implements MoviesFragment.Callback{
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private static final String MOVIE_DETAILS_FRAGMENT_TAG = "MDFTAG";
+    private static final String MOVIE_SYNOPSIS_FRAGMENT_TAG = "SDFTAG";
+    private boolean mTwoPane;
+
+    ArrayList<Video> mVideoArrayList = new ArrayList<>();
+    ArrayList<Review> mReviewArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(LOG_TAG, "On Create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_container, new MoviesFragment())
-                    .commit();
+        if(findViewById(R.id.movie_detail_container) == null){
+            mTwoPane = false;
+            getSupportActionBar().setElevation(0f);
+        }else{
+            //Two-pane mode
+            mTwoPane = true;
+            //Show the detail view by adding or replacing detail fragment to this activity
+            if(savedInstanceState == null){
+                /* Show the detail view
+               by adding or replacing all the fragments of the detail activity
+               into the container for details in this activity
+                This basically means MainActivity has to do here
+                the work done by DetailActivity in its onCreate
+             */
+            /*Pass movie object to the fragment construction
+                MovieDetailsFragment movieDetailFragment = new MovieDetailsFragment();
+                MovieSynapsisFragment movieSynapsisFragment = new MovieSynapsisFragment();
+                */
+
+                /*Add the fragments*/
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_details_fragment_holder, new MovieDetailsFragment())
+                        //.add(R.id.movie_details_fragment_holder, new ContentSeperatorFragment())
+                        .commit();
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_synapsis_fragment_holder, new MovieSynapsisFragment())
+                        //.add(R.id.movie_synapsis_fragment_holder, new ContentSeperatorFragment())
+                        .commit();
+
+            }
         }
     }
 
@@ -99,5 +151,149 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * DetailFragmentCallback for when an item has been selected.
+     *
+     * @param movie
+     */
+    @Override
+    public void onItemSelected(Movie movie) {
+        if(!mTwoPane){
+            Intent openMovieDetailsIntent = new Intent(this, MovieDetailActivity.class);
+            openMovieDetailsIntent.putExtra(Movie.MOVIE_PARCEL_KEY, movie);
+            startActivity(openMovieDetailsIntent);
+        }
+        else{
+            //In Two pane mode
+            /* Show the detail view
+               by adding or replacing all the fragments of the detail activity
+               into the container for details in this activity
+                This basically means MainActivity has to do here
+                the work done by DetailActivity in its onCreate
+             */
+            /*Pass movie object to the fragment construction */
+            MovieDetailsFragment movieDetailFragment = MovieDetailsFragment.newInstance(movie);
+            MovieSynapsisFragment movieSynapsisFragment = MovieSynapsisFragment.newInstance(movie);
+
+                /*Add the fragments*/
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_details_fragment_holder, movieDetailFragment)
+                    //.add(R.id.movie_details_fragment_holder, new ContentSeperatorFragment())
+                    .commit();
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_synapsis_fragment_holder, movieSynapsisFragment)
+                    //.add(R.id.movie_synapsis_fragment_holder, new ContentSeperatorFragment())
+                    .commit();
+
+            /*Remove existing reviews fragment*/
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.reviews_fragment_holder, new MovieReviewFragment())
+                    .commit();
+
+            /*Get Reviews data from the API using Retrofit */
+            getReviewsFromApi(movie);
+
+                /*Get trailer/teaser videos data from the API using Retrofit */
+            getVideosFromApi(movie);
+
+        }
+    }
+
+    /*Method to get Reviews data from the API using Retrofit
+               * and add those to fragments*/
+    private void getReviewsFromApi(Movie movie){
+        String apiKey = getString(R.string.movieDbApiKey);
+        Call<ReviewDBResult> reviewsCall = RetrofitAPIProvider.getMovieDBAPI().getReviewsList(movie.getId(), apiKey);
+
+        /*Iterate reviews result to create Review fragments */
+        reviewsCall.enqueue(new Callback<ReviewDBResult>() {
+            @Override
+            public void onResponse(Call<ReviewDBResult> call, Response<ReviewDBResult> response) {
+                int statusCode = response.code();
+                Log.i(LOG_TAG, "Retrofit status code for reviews :" + statusCode);
+                if (statusCode == 200){
+                    ReviewDBResult reviewDBResult = response.body();
+                    mReviewArrayList = reviewDBResult.getReviewArrayList();
+                    /* for each review add a review fragment*/
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    for(Review review : mReviewArrayList){
+                        transaction.add(R.id.reviews_fragment_holder, MovieReviewFragment.newInstance(review, mReviewArrayList));
+                                //.add(R.id.reviews_fragment_holder, new ContentSeperatorFragment());
+                    }
+                    transaction.commit();
+                }
+            }
+            @Override
+            public void onFailure(Call<ReviewDBResult> call, Throwable t) {
+                Log.e(LOG_TAG, t.getMessage());
+            }
+        });
+    }
+
+
+    /*Method to get Videos data from the API using Retrofit
+    * and those to the fragments*/
+    private void getVideosFromApi(Movie movie){
+        String apiKey = getString(R.string.movieDbApiKey);
+        Call<VideoDBResult> videosCall = RetrofitAPIProvider.getMovieDBAPI().getVideosList(movie.getId(), apiKey);
+        /*Get videos list*/
+        videosCall.enqueue(new Callback<VideoDBResult>() {
+            @Override
+            public void onResponse(Call<VideoDBResult> call, Response<VideoDBResult> response) {
+                int statusCode = response.code();
+                Log.i(LOG_TAG, "Retrofit status code for Videos :" + statusCode);
+                if(statusCode == 200){
+                    VideoDBResult videoDBResult = response.body();
+                    mVideoArrayList = videoDBResult.getVideoArrayList();
+                    //Set onClickListener for backdrop image
+                    setOnClickListenerForBackdropImage();
+                    if(mVideoArrayList.size() > 1){
+                        //Add more videos fragment
+                        addMoreVideosFragment();
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<VideoDBResult> call, Throwable t) {
+                Log.e(LOG_TAG, t.getMessage());
+            }
+        });
+    }
+
+    private void setOnClickListenerForBackdropImage(){
+        /* Rootview of detail activity
+        to access the backdrop image view of movie details fragment
+        */
+        final ViewGroup rootViewOfDetailActivity = (ViewGroup) this.findViewById(R.id.movie_details_fragment_holder);
+        //Get the first trailer video
+        if(!mVideoArrayList.isEmpty()){
+            final Video firstTrailerVideo = mVideoArrayList.get(0);
+            if(firstTrailerVideo != null && firstTrailerVideo.getKey() != null){
+                //Get backdrop image view
+                ImageView backDropImageView = (ImageView)rootViewOfDetailActivity.findViewById(R.id.movie_detail_fragment_backdrop_image);
+                                /*Set on click listener for backdrop image to show trailer on youtube */
+                backDropImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/")
+                                .buildUpon().appendPath("watch").build()
+                                .buildUpon().appendQueryParameter("v", firstTrailerVideo.getKey())
+                                .build());
+                        startActivity(youTubeIntent);
+                    }
+                });
+            }
+        }
+    }
+
+    private void addMoreVideosFragment(){
+        Log.i(LOG_TAG, "Addig More Videos fragment");
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.more_videos_fragment_holder, MoreVideosLinkFragment.createInstance(mVideoArrayList))
+                //.add(R.id.more_videos_fragment_holder, new ContentSeperatorFragment())
+                .commit();
     }
 }

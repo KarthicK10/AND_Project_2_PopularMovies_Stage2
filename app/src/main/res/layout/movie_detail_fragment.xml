@@ -80,9 +80,17 @@
             android:id="@+id/fav_icon"
             />
 
+
     </LinearLayout>
 
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#BDBDBD"
+        android:layout_margin="16dp"
+        android:id="@+id/content_seperator"
+        android:layout_below="@+id/movie_detail_fragment_thumbnail_image"
+        android:padding="10dp"/>
 
 
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.karthick.popularmovies.data.Movie;
+import com.example.karthick.popularmovies.data.RetrofitAPIProvider;
 import com.example.karthick.popularmovies.data.Review;
 import com.example.karthick.popularmovies.data.ReviewDBResult;
 import com.example.karthick.popularmovies.data.Video;
@@ -21,8 +22,6 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /*
 
@@ -44,16 +43,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = AppCompatActivity.class.getSimpleName();
 
-    ArrayList<MovieReviewFragment> movieReviewFragments = new ArrayList<MovieReviewFragment>();
     ArrayList<Video> mVideoArrayList = new ArrayList<>();
     ArrayList<Review> mReviewArrayList = new ArrayList<>();
-
-    final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(MOVIE_API_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
-
-    final MovieDBAPI movieDBAPI = retrofit.create(MovieDBAPI.class);
 
     private boolean firstCreation = true; //Flags if activity is created for first time or on screen rotation. Helps to use values from savedInstanceState
 
@@ -80,9 +71,9 @@ public class MovieDetailActivity extends AppCompatActivity {
                 /*Add the fragments*/
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.movie_details_fragment_holder, movieDetailFragment)
-                        .add(R.id.movie_details_fragment_holder, new ContentSeperatorFragment())
+                        //.add(R.id.movie_details_fragment_holder, new ContentSeperatorFragment())
                         .add(R.id.movie_synapsis_fragment_holder, movieSynapsisFragment)
-                        .add(R.id.movie_synapsis_fragment_holder, new ContentSeperatorFragment())
+                        //.add(R.id.movie_synapsis_fragment_holder, new ContentSeperatorFragment())
                         .commit();
 
                 /*Get Reviews data from the API using Retrofit */
@@ -123,7 +114,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 * and add those to fragments*/
     private void getReviewsFromApi(Movie movie){
         String apiKey = getString(R.string.movieDbApiKey);
-        Call<ReviewDBResult> reviewsCall = movieDBAPI.getReviewsList(movie.getId(), apiKey);
+        Call<ReviewDBResult> reviewsCall = RetrofitAPIProvider.getMovieDBAPI().getReviewsList(movie.getId(), apiKey);
 
         /*Iterate reviews result to create Review fragments */
         reviewsCall.enqueue(new Callback<ReviewDBResult>() {
@@ -137,8 +128,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                     /* for each review add a review fragment*/
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     for(Review review : mReviewArrayList){
-                        transaction.add(R.id.reviews_fragment_holder, MovieReviewFragment.newInstance(review, mReviewArrayList))
-                                .add(R.id.reviews_fragment_holder, new ContentSeperatorFragment());
+                        transaction.add(R.id.reviews_fragment_holder, MovieReviewFragment.newInstance(review, mReviewArrayList));
+                                //.add(R.id.reviews_fragment_holder, new ContentSeperatorFragment());
                     }
                     transaction.commit();
                 }
@@ -155,7 +146,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     * and those to the fragments*/
     private void getVideosFromApi(Movie movie){
         String apiKey = getString(R.string.movieDbApiKey);
-        Call<VideoDBResult> videosCall = movieDBAPI.getVideosList(movie.getId(), apiKey);
+        Call<VideoDBResult> videosCall = RetrofitAPIProvider.getMovieDBAPI().getVideosList(movie.getId(), apiKey);
         /*Get videos list*/
         videosCall.enqueue(new Callback<VideoDBResult>() {
             @Override
@@ -184,31 +175,34 @@ public class MovieDetailActivity extends AppCompatActivity {
         /* Rootview of detail activity
         to access the backdrop image view of movie details fragment
         */
-        final ViewGroup rootViewOfDetailActivity = (ViewGroup) this.findViewById(R.id.movie_details_activity);
+        final ViewGroup rootViewOfDetailActivity = (ViewGroup) this.findViewById(R.id.movie_detail_container);
         //Get the first trailer video
-        final Video firstTrailerVideo = mVideoArrayList.get(0);
-        if(firstTrailerVideo != null && firstTrailerVideo.getKey() != null){
-            //Get backdrop image view
-            ImageView backDropImageView = (ImageView)rootViewOfDetailActivity.findViewById(R.id.movie_detail_fragment_backdrop_image);
+        if(!mVideoArrayList.isEmpty()) {
+            final Video firstTrailerVideo = mVideoArrayList.get(0);
+            if(firstTrailerVideo != null && firstTrailerVideo.getKey() != null){
+                //Get backdrop image view
+                ImageView backDropImageView = (ImageView)rootViewOfDetailActivity.findViewById(R.id.movie_detail_fragment_backdrop_image);
                                 /*Set on click listener for backdrop image to show trailer on youtube */
-            backDropImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/")
-                            .buildUpon().appendPath("watch").build()
-                            .buildUpon().appendQueryParameter("v", firstTrailerVideo.getKey())
-                            .build());
-                    startActivity(youTubeIntent);
-                }
-            });
+                backDropImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/")
+                                .buildUpon().appendPath("watch").build()
+                                .buildUpon().appendQueryParameter("v", firstTrailerVideo.getKey())
+                                .build());
+                        startActivity(youTubeIntent);
+                    }
+                });
+            }
         }
+
     }
 
     private void addMoreVideosFragment(){
         Log.i(LOG_TAG, "Addig More Videos fragment");
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.more_videos_fragment_holder, MoreVideosLinkFragment.createInstance(mVideoArrayList))
-                .add(R.id.more_videos_fragment_holder, new ContentSeperatorFragment())
+                .replace(R.id.more_videos_fragment_holder, MoreVideosLinkFragment.createInstance(mVideoArrayList))
+                //.replace(R.id.more_videos_fragment_holder, new ContentSeperatorFragment())
                 .commit();
     }
 }

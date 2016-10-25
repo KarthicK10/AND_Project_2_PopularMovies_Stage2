@@ -81,7 +81,9 @@ public class MovieDetailsFragment extends Fragment implements LoaderManager.Load
      */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        getLoaderManager().initLoader(FAVORITE_CHECK_LOADER, null,  this);
+        if(movie != null){
+            getLoaderManager().initLoader(FAVORITE_CHECK_LOADER, null,  this);
+        }
         super.onActivityCreated(savedInstanceState);
     }
 

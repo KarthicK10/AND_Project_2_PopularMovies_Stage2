@@ -90,27 +90,29 @@ public class MovieReviewFragment extends android.support.v4.app.Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //inflate movie reviews fragment layout
-        View rootView = inflater.inflate(R.layout.list_item_review, container, false);
+        if (mReview == null || mReview.getContent() == null || mReview.getContent().trim().equals("")) {
+            return null;
+        } else {
+            View rootView = inflater.inflate(R.layout.list_item_review, container, false);
 
-        if(mReview != null){
-            TextView userName = (TextView)rootView.findViewById(R.id.review_item_user_name);
-            TextView content = (TextView)rootView.findViewById(R.id.review_item_content);
+            TextView userName = (TextView) rootView.findViewById(R.id.review_item_user_name);
+            TextView content = (TextView) rootView.findViewById(R.id.review_item_content);
             userName.setText(mReview.getAuthor());
             content.setText(mReview.getContent());
             content.setMaxLines(3);
             content.setEllipsize(TextUtils.TruncateAt.END);
+
+            rootView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Create Intent and pass to MovieAllReviewsActivity
+                    Intent intent = new Intent(getActivity(), MovieAllReviewsActivity.class);
+                    intent.putParcelableArrayListExtra(Review.REVIEW_LIST_PARCEL_KEY, mReviewArrayList);
+                    startActivity(intent);
+                }
+            });
+
+            return rootView;
         }
-
-        rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Create Intent and pass to MovieAllReviewsActivity
-                Intent intent = new Intent(getActivity(), MovieAllReviewsActivity.class);
-                intent.putParcelableArrayListExtra(Review.REVIEW_LIST_PARCEL_KEY, mReviewArrayList);
-                startActivity(intent);
-            }
-        });
-
-        return rootView;
     }
 }

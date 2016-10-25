@@ -2,7 +2,6 @@ package com.example.karthick.popularmovies;
 
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -80,6 +78,18 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         // Required empty public constructor
     }
 
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback{
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Movie movie);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -92,6 +102,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
              * This is the first creation and therefore state cannot be retrieved from savedInstanceState
              */
             mSavedInstanceAvailable = false; // To indicate onStart to refresh the movies list from api
+            Log.d(LOG_TAG, "savedInstanceAvailable set to false");
             //refreshMoviesListing();
         }
         else{
@@ -104,6 +115,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             Log.i("previous Sort Order: " , savedInstanceState.getString(SORT_ORDER));
             Log.i("current sort order : ", getSortOrderPath());
             prevSortOrder = savedInstanceState.getString(SORT_ORDER);
+
         }
 
     }
@@ -117,6 +129,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     public void onStart() {
         Log.i(LOG_TAG, "onStart: Called");
         if(!mSavedInstanceAvailable){
+            Log.d(LOG_TAG, "calling refreshMoviesListing onStart");
             refreshMoviesListing();
         }
         super.onStart();
@@ -211,7 +224,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
             Call<MovieDBResult> call = movieDBAPI.getmoviesList(sortOrder, apiKey, page);
 
-            call.enqueue(new Callback<MovieDBResult>() {
+            call.enqueue(new retrofit2.Callback<MovieDBResult>() {
                 @Override
                 public void onResponse(Call<MovieDBResult> call, Response<MovieDBResult> response) {
                     int statusCode = response.code();
@@ -219,10 +232,11 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                     Log.i(LOG_TAG, "Retrofit call Status code : " + statusCode);
                     ArrayList<Movie> moviesList = movieDBResult.getMoviesList();
                     if(moviesGridAdapter != null){
+                        Log.d(LOG_TAG, "adding data to adapter");
                         int currentSize = moviesGridAdapter.getItemCount();
                         mMoviesList.addAll(moviesList);
                         moviesGridAdapter.notifyItemRangeInserted(currentSize, moviesList.size()-1);
-                    }
+                   }
                 }
 
                 @Override
@@ -237,6 +251,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     * Refreshes from local DB or API call based on current sort order preference
     * */
     private void refreshMoviesListing(){
+        Log.d(LOG_TAG, "refreshMoviesListing called");
         if(moviesGridAdapter != null && mMoviesList != null){
             mMoviesList.clear();
             moviesGridAdapter.notifyDataSetChanged();
@@ -286,10 +301,12 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent openMovieDetailsIntent = new Intent(getActivity(), MovieDetailActivity.class);
+                        //Intent openMovieDetailsIntent = new Intent(getActivity(), MovieDetailActivity.class);
                         Movie movie = moviesGridAdapter.getItem(position);
-                        openMovieDetailsIntent.putExtra(Movie.MOVIE_PARCEL_KEY, movie);
-                        startActivity(openMovieDetailsIntent);
+                        //openMovieDetailsIntent.putExtra(Movie.MOVIE_PARCEL_KEY, movie);
+                        //startActivity(openMovieDetailsIntent);
+                        ((Callback)getActivity())
+                                .onItemSelected(movie);
                     }
                 })
         );
