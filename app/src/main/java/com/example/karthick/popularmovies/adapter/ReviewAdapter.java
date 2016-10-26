@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.karthick.popularmovies.R;
 import com.example.karthick.popularmovies.data.Review;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.karthick.popularmovies.fragment.MovieAllReviewsFragment;
+import com.example.karthick.popularmovies.R;
 import com.example.karthick.popularmovies.data.Review;
 
 import java.util.ArrayList;

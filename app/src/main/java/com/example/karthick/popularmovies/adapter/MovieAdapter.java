@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.androidquery.AQuery;
+import com.example.karthick.popularmovies.R;
 import com.example.karthick.popularmovies.data.Movie;
 
 import java.util.ArrayList;

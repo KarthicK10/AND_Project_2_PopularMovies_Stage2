@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.fragment;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
+import com.example.karthick.popularmovies.R;
 import com.example.karthick.popularmovies.data.Movie;
 import com.example.karthick.popularmovies.data.MovieContract;
 

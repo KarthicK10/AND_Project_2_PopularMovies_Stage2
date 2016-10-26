@@ -1,7 +1,5 @@
 package com.example.karthick.popularmovies.data;
 
-import com.example.karthick.popularmovies.MovieDBAPI;
-
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

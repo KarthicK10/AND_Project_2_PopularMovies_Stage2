@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.supporter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

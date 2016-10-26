@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <!-- This layout is a two pane layout for the Items master/detail flow-->
 
     <fragment
         android:id="@+id/fragment_movies"
-        android:name="com.example.karthick.popularmovies.MoviesFragment"
+        android:name="com.example.karthick.popularmovies.fragment.MoviesFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/movie_detail_container"
         android:orientation="vertical"
-        tools:context=".MovieDetailActivity"
+        tools:context=".activity.MovieDetailActivity"
         android:layout_weight="5">
 
         <ScrollView

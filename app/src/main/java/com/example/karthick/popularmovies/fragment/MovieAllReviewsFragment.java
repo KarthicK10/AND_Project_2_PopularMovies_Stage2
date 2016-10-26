@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.example.karthick.popularmovies.R;
+import com.example.karthick.popularmovies.adapter.ReviewAdapter;
 import com.example.karthick.popularmovies.data.Review;
 
 import java.util.ArrayList;

@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,19 +20,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MovieDetailActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".activity.MovieDetailActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity">
+            android:name=".activity.SettingsActivity"
+            android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
 
         <provider
@@ -42,15 +42,15 @@
             android:exported="false" />
 
         <activity
-            android:name=".MovieVideosActivity"
+            android:name=".activity.MovieVideosActivity"
             android:label="@string/title_activity_movie_videos"
-            android:parentActivityName=".MovieDetailActivity">
+            android:parentActivityName=".activity.MovieDetailActivity">
         </activity>
 
         <activity
-            android:name=".MovieAllReviewsActivity"
+            android:name=".activity.MovieAllReviewsActivity"
             android:label="@string/title_activity_movie_reviews"
-            android:parentActivityName=".MovieDetailActivity">
+            android:parentActivityName=".activity.MovieDetailActivity">
         </activity>
 
     </application>

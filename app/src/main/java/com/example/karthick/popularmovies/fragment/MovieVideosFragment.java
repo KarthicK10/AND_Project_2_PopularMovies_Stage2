@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.example.karthick.popularmovies.R;
+import com.example.karthick.popularmovies.adapter.TrailerAdapter;
 import com.example.karthick.popularmovies.data.Video;
 
 import java.util.ArrayList;

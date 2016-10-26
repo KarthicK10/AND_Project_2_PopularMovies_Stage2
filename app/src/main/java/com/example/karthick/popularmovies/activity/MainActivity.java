@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.karthick.popularmovies.fragment.MoreVideosLinkFragment;
+import com.example.karthick.popularmovies.fragment.MovieDetailsFragment;
+import com.example.karthick.popularmovies.fragment.MovieReviewFragment;
+import com.example.karthick.popularmovies.fragment.MovieSynapsisFragment;
+import com.example.karthick.popularmovies.fragment.MoviesFragment;
+import com.example.karthick.popularmovies.R;
 import com.example.karthick.popularmovies.data.Movie;
 import com.example.karthick.popularmovies.data.RetrofitAPIProvider;
 import com.example.karthick.popularmovies.data.Review;
@@ -25,7 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements MoviesFragment.Callback{
+public class MainActivity extends AppCompatActivity implements MoviesFragment.Callback {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 

@@ -1,10 +1,12 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.karthick.popularmovies.fragment.MovieVideosFragment;
+import com.example.karthick.popularmovies.R;
 import com.example.karthick.popularmovies.data.Video;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.data;
 
 import com.example.karthick.popularmovies.data.MovieDBResult;
 import com.example.karthick.popularmovies.data.ReviewDBResult;

@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.fragment;
 
 import android.content.Context;
 import android.content.CursorLoader;
@@ -19,6 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 
+import com.example.karthick.popularmovies.supporter.EndlessRecyclerViewScrollListener;
+import com.example.karthick.popularmovies.adapter.MovieAdapter;
+import com.example.karthick.popularmovies.data.MovieDBAPI;
+import com.example.karthick.popularmovies.R;
+import com.example.karthick.popularmovies.supporter.RecyclerItemClickListener;
+import com.example.karthick.popularmovies.supporter.SpacesItemDecoration;
+import com.example.karthick.popularmovies.activity.MainActivity;
+import com.example.karthick.popularmovies.activity.MovieDetailActivity;
 import com.example.karthick.popularmovies.data.Movie;
 import com.example.karthick.popularmovies.data.MovieContract;
 import com.example.karthick.popularmovies.data.MovieDBResult;

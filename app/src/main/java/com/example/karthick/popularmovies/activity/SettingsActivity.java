@@ -1,10 +1,12 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.activity;
 
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+
+import com.example.karthick.popularmovies.R;
 
 /**
  * Created by KarthicK on 6/12/2016.

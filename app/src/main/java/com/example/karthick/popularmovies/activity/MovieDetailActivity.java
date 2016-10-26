@@ -1,4 +1,4 @@
-package com.example.karthick.popularmovies;
+package com.example.karthick.popularmovies.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -10,6 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.karthick.popularmovies.fragment.MoreVideosLinkFragment;
+import com.example.karthick.popularmovies.fragment.MovieDetailsFragment;
+import com.example.karthick.popularmovies.fragment.MovieReviewFragment;
+import com.example.karthick.popularmovies.fragment.MovieSynapsisFragment;
+import com.example.karthick.popularmovies.R;
 import com.example.karthick.popularmovies.data.Movie;
 import com.example.karthick.popularmovies.data.RetrofitAPIProvider;
 import com.example.karthick.popularmovies.data.Review;
