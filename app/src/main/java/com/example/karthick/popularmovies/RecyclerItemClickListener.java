@@ -1,7 +1,6 @@
 package com.example.karthick.popularmovies;
 
 import android.content.Context;
-import android.gesture.Gesture;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -71,11 +70,11 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
     /**
      * Called when a child of RecyclerView does not want RecyclerView and its ancestors to
      * intercept touch events with
-     * {@link ViewGroup#onInterceptTouchEvent(MotionEvent)}.
+     * {@link android.view.ViewGroup#onInterceptTouchEvent(MotionEvent)}.
      *
      * @param disallowIntercept True if the child does not want the parent to
      *                          intercept touch events.
-     * @see ViewParent#requestDisallowInterceptTouchEvent(boolean)
+     * @see android.view.ViewParent#requestDisallowInterceptTouchEvent(boolean)
      */
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
