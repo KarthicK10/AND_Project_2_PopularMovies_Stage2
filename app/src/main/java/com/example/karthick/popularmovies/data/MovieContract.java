@@ -11,7 +11,7 @@ import android.provider.BaseColumns;
  *
  */
 
-public class MovieContract {
+public final class MovieContract {
 
     //Define the Content Authority to be used in Content URI
     public static final String CONTENT_AUTHORIY = "com.example.karthick.popularmovies";
@@ -21,6 +21,10 @@ public class MovieContract {
 
     //Define path for segment for favorite data
     public static final String PATH_FAVORITE = "favorite";
+
+    private MovieContract(){
+        //Suppress the constructor as this is not to be instantiated
+    }
 
     /*Inner class to define the column names of the favorite table*/
     public static final class FavoriteEntry implements BaseColumns{
