@@ -98,7 +98,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
      */
     @Override
     public void onBindViewHolder(MovieViewHolder movieViewHolder, int position) {
-
         //Get the data model based on position
         Movie movie = mMoviesList.get(position);
         String posterPath = movie.getPosterPath();
@@ -111,8 +110,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         ImageView posterImageView = movieViewHolder.posterImageView;
         AQuery aq = new AQuery(posterImageView);
         aq.id(R.id.grid_item_movie_poster_imageView).image(imagePath);
-
-
     }
 
     /**

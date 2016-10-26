@@ -26,7 +26,6 @@ public class MovieVideosActivity extends AppCompatActivity {
             if(intent != null && intent.hasExtra(Video.VIDEO_LIST_PARCEL_KEY)){
                 mVideoArrayList = intent.getParcelableArrayListExtra(Video.VIDEO_LIST_PARCEL_KEY);
             }
-
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.movie_videos_activity_layout, MovieVideosFragment.createInstance(mVideoArrayList))
                     .commit();

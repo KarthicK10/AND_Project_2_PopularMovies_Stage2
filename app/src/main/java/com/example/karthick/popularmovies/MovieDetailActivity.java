@@ -39,8 +39,6 @@ import retrofit2.Response;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
-    private static final String MOVIE_API_BASE_URL = "https://api.themoviedb.org";
-
     private static final String LOG_TAG = AppCompatActivity.class.getSimpleName();
 
     ArrayList<Video> mVideoArrayList = new ArrayList<>();
@@ -137,7 +135,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
     }
-
 
     /*Method to get Videos data from the API using Retrofit
     * and those to the fragments*/

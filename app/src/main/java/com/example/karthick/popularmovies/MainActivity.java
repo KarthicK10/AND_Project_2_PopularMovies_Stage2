@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private static final String MOVIE_DETAILS_FRAGMENT_TAG = "MDFTAG";
-    private static final String MOVIE_SYNOPSIS_FRAGMENT_TAG = "SDFTAG";
     private boolean mTwoPane;
 
     ArrayList<Video> mVideoArrayList = new ArrayList<>();
@@ -88,8 +86,6 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
         Log.i(LOG_TAG, "On Start");
         super.onStart();
     }
-
-
 
     /**
      * Initialize the contents of the Activity's standard options menu.  You
@@ -228,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
             }
         });
     }
-
 
     /*Method to get Videos data from the API using Retrofit
     * and those to the fragments*/

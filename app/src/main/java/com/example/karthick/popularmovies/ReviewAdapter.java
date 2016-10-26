@@ -18,10 +18,6 @@ import java.util.ArrayList;
 
 public class ReviewAdapter extends ArrayAdapter {
 
-    //private Context mContext;
-
-    //private List<Review> mReviewArrayList = new ArrayList<>();
-
     public ReviewAdapter(Context context, ArrayList<Review> reviewArrayList){
         super(context, R.layout.list_item_review, reviewArrayList);
         //this.mContext = context;
