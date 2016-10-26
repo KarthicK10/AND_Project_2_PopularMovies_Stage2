@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Entries for Sort Order Settings-->
+    <string-array name="sort_order_entries">
+        <item>POPULAR</item>
+        <item>TOP RATED</item>
+        <item>FAVORITES</item>
+    </string-array>
+
+    <!--
+            Entry values for Sort Order Settings
+            The values refer to the end points of theMovieDB api call
+            as defined in the theMovieDBAPIContract.xml resource file
+
+            When adding new values please ensure to adhere to this process
+            of adding an endpoint entry in theMovieDBAPIContract.xml and
+            reference it here. This ensures we add sort orders with valid end points.
+
+            TODO - Is there a way to enforce this by design???
+         -->
+    <string-array name="sort_order_entry_values">
+        <item>@string/mdb_path_popular</item>
+        <item>@string/mdb_path_top_rated</item>
+        <item>@string/sort_order_favorite_value</item>
+    </string-array>
+
+</resources>
