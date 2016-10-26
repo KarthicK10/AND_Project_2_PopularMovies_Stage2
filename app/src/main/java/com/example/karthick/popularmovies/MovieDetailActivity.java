@@ -71,9 +71,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 /*Add the fragments*/
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.movie_details_fragment_holder, movieDetailFragment)
-                        //.add(R.id.movie_details_fragment_holder, new ContentSeperatorFragment())
                         .add(R.id.movie_synapsis_fragment_holder, movieSynapsisFragment)
-                        //.add(R.id.movie_synapsis_fragment_holder, new ContentSeperatorFragment())
                         .commit();
 
                 /*Get Reviews data from the API using Retrofit */
@@ -129,7 +127,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     for(Review review : mReviewArrayList){
                         transaction.add(R.id.reviews_fragment_holder, MovieReviewFragment.newInstance(review, mReviewArrayList));
-                                //.add(R.id.reviews_fragment_holder, new ContentSeperatorFragment());
                     }
                     transaction.commit();
                 }
@@ -202,7 +199,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         Log.i(LOG_TAG, "Addig More Videos fragment");
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.more_videos_fragment_holder, MoreVideosLinkFragment.createInstance(mVideoArrayList))
-                //.replace(R.id.more_videos_fragment_holder, new ContentSeperatorFragment())
                 .commit();
     }
 }

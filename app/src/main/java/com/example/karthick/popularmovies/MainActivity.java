@@ -63,12 +63,10 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
                 /*Add the fragments*/
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_details_fragment_holder, new MovieDetailsFragment())
-                        //.add(R.id.movie_details_fragment_holder, new ContentSeperatorFragment())
                         .commit();
 
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_synapsis_fragment_holder, new MovieSynapsisFragment())
-                        //.add(R.id.movie_synapsis_fragment_holder, new ContentSeperatorFragment())
                         .commit();
 
             }
@@ -180,12 +178,10 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
                 /*Add the fragments*/
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.movie_details_fragment_holder, movieDetailFragment)
-                    //.add(R.id.movie_details_fragment_holder, new ContentSeperatorFragment())
                     .commit();
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.movie_synapsis_fragment_holder, movieSynapsisFragment)
-                    //.add(R.id.movie_synapsis_fragment_holder, new ContentSeperatorFragment())
                     .commit();
 
             /*Remove existing reviews fragment*/
@@ -221,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     for(Review review : mReviewArrayList){
                         transaction.add(R.id.reviews_fragment_holder, MovieReviewFragment.newInstance(review, mReviewArrayList));
-                                //.add(R.id.reviews_fragment_holder, new ContentSeperatorFragment());
+
                     }
                     transaction.commit();
                 }
@@ -293,7 +289,6 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.Ca
         Log.i(LOG_TAG, "Addig More Videos fragment");
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.more_videos_fragment_holder, MoreVideosLinkFragment.createInstance(mVideoArrayList))
-                //.add(R.id.more_videos_fragment_holder, new ContentSeperatorFragment())
                 .commit();
     }
 }
