@@ -100,10 +100,11 @@ public class MovieDetailsFragment extends Fragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreateView");
-        /*Inflate movie detail fragment layout */
-        View rootView = inflater.inflate(R.layout.movie_detail_fragment, container, false);
+
 
         if(movie != null){
+            /*Inflate movie detail fragment layout */
+            View rootView = inflater.inflate(R.layout.movie_detail_fragment, container, false);
 
             final String IMAGE_BASE_URL = getString(R.string.mdb_image_baseUrl);
             final String backdropImageSize = getString(R.string.mdb_image_size_780);
@@ -139,8 +140,11 @@ public class MovieDetailsFragment extends Fragment implements LoaderManager.Load
             /*Get favIcon Imageview*/
             favIconImage = (ImageView) rootView.findViewById(R.id.fav_icon);
 
+            return rootView;
+        }else{
+            return null;
         }
-        return rootView;
+
     }
 
     /**
